@@ -1,6 +1,7 @@
 library(vars)
 library(glasso)
 library(igraph)
+library(xts)
 
 # Încărcarea seriilor de randamente calculate anterior
 returns <- readRDS("data/returns_sectors.rds")
@@ -34,6 +35,7 @@ cat("VAR estimated.\n\n")
 # Calculul matricei de covarianță a reziduurilor VAR
 resid_mat <- residuals(var_fit)
 S <- cov(resid_mat)
+# Salvarea reziduurilor VAR pentru trasabilitate
 saveRDS(resid_mat, "outputs/var_residuals.rds")
 cat("Residual covariance matrix S computed. Dim:", paste(dim(S), collapse="x"), "\n\n")
 
@@ -58,7 +60,8 @@ print(dens_df)
 cat("\n")
 
 # Matricea de precizie estimată pentru valoarea selectată a penalizării
-rho <- 0.15
+# Parametrul de regularizare selectat prin criteriul BIC
+rho <- 1.00
 gl <- glasso(S, rho = rho)
 Theta <- gl$wi
 
@@ -80,6 +83,15 @@ W[adj == 0] <- 0
 # Construirea rețelei neorientate folosind pachetul igraph
 g <- graph_from_adjacency_matrix(W, mode = "undirected", weighted = TRUE, diag = FALSE)
 V(g)$name <- colnames(Y)
+
+# Selecția muchiilor cu pondere absolută maximă
+edges_df <- as_data_frame(g, what = "edges")
+write.csv(edges_df, "outputs/edges.csv", row.names = FALSE)
+
+edges_df$weight_abs <- abs(edges_df$weight)
+edges_df <- edges_df[order(-edges_df$weight_abs), ]
+write.csv(head(edges_df, 10), "outputs/top10_edges.csv", row.names = FALSE)
+
 
 cat("Graph built.\n")
 cat("Nodes:", vcount(g), "\n")
