@@ -24,7 +24,7 @@ resid_mat <- residuals(var_fit)
 S <- cov(resid_mat)
 
 # Estimarea graphical lasso pe o grilă de valori ale penalizării rho
-rho_grid <- seq(0.02, 0.30, by = 0.01)
+rho_grid <- seq(0.05, 1.00, by = 0.05)
 gl_list <- lapply(rho_grid, function(rho) glasso(S, rho = rho))
 
 # Calculul densității rețelei induse de fiecare matrice de precizie estimată
