@@ -27,18 +27,33 @@ S <- cov(resid_mat)
 rho_grid <- seq(0.05, 1.00, by = 0.05)
 gl_list <- lapply(rho_grid, function(rho) glasso(S, rho = rho))
 
-# Calculul densității rețelei induse de fiecare matrice de precizie estimată
+# Determinarea muchiilor prin prag pe elementele off-diagonale ale matricei de precizie
+eps <- 1e-4
 edge_density <- sapply(gl_list, function(g) {
   Theta <- g$wi
-  A <- (abs(Theta) > 1e-8) * 1
+  n <- ncol(Theta)
+  A <- (abs(Theta) > eps) * 1
   diag(A) <- 0
   m <- sum(A) / 2
-  n <- ncol(Theta)
   m / (n * (n - 1) / 2)
 })
 
+# Calculul criteriului BIC pentru selecția parametrului rho
+bic_vals <- sapply(gl_list, function(g) {
+  Theta <- g$wi
+  n <- nrow(S)
+  logdet <- as.numeric(determinant(Theta, logarithm = TRUE)$modulus)
+  tr_term <- sum(S * Theta)
+  loglik <- (logdet - tr_term)
+  edges <- sum(abs(Theta[upper.tri(Theta)]) > eps)
+  k <- edges
+  -2 * loglik + log(nrow(Y)) * k
+})
+
+
+
 # Salvarea densității rețelei în funcție de rho
-dens_df <- data.frame(rho = rho_grid, density = edge_density)
+dens_df <- data.frame(rho = rho_grid, density = edge_density, bic = bic_vals)
 write.csv(dens_df, "outputs/glasso_density_grid.csv", row.names = FALSE)
 
 # Reprezentarea relației rho–densitate
