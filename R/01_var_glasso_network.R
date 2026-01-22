@@ -34,6 +34,7 @@ cat("VAR estimated.\n\n")
 # Calculul matricei de covarianță a reziduurilor VAR
 resid_mat <- residuals(var_fit)
 S <- cov(resid_mat)
+saveRDS(resid_mat, "outputs/var_residuals.rds")
 cat("Residual covariance matrix S computed. Dim:", paste(dim(S), collapse="x"), "\n\n")
 
 # Estimarea matricei de precizie folosind graphical lasso pentru mai multe valori ale penalizării
