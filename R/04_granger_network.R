@@ -2,6 +2,8 @@ library(vars)
 library(igraph)
 library(car)
 
+source("R/99_etf_labels.R")
+
 dir.create("outputs", showWarnings = FALSE)
 
 # Încarcă artefactele generate de 01
@@ -57,15 +59,20 @@ edges_df <- if (length(edge_rows) == 0) {
 
 write.csv(edges_df, "outputs/granger_edges.csv", row.names = FALSE)
 
+
 g <- igraph::graph_from_data_frame(edges_df, directed = TRUE, vertices = vars_names)
 if (nrow(edges_df) > 0) E(g)$weight <- edges_df$weight
+
+# Etichete: ETF – Sector (IMPORTANT: după ce g există)
+labels <- sapply(V(g)$name, make_label)
 
 png("outputs/granger_network.png", width = 1400, height = 900)
 plot(
   g,
   edge.arrow.size = 0.4,
   vertex.size = 32,
-  vertex.label.cex = 1.1,
+  vertex.label = labels,
+  vertex.label.cex = 0.85,
   main = paste0("Granger network (alpha=", alpha, ", p=", p, ")")
 )
 dev.off()

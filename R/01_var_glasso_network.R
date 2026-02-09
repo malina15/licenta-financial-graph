@@ -3,6 +3,8 @@ library(glasso)
 library(igraph)
 library(xts)
 
+source("R/99_etf_labels.R")
+
 # Încărcarea seriilor de randamente calculate anterior
 returns <- readRDS("data/returns_sectors.rds")
 
@@ -93,6 +95,8 @@ W[adj == 0] <- 0
 g <- graph_from_adjacency_matrix(W, mode = "max", weighted = TRUE, diag = FALSE)
 V(g)$name <- colnames(Y)
 
+labels <- sapply(V(g)$name, make_label)
+
 # Selecția muchiilor cu pondere absolută maximă
 edges_df <- as_data_frame(g, what = "edges")
 write.csv(edges_df, "outputs/edges.csv", row.names = FALSE)
@@ -130,9 +134,10 @@ png("outputs/network.png", width = 1400, height = 900)
 plot(
   g,
   vertex.size = 32,
-  vertex.label.cex = 1.1,
+  vertex.label = labels,
+  vertex.label.cex = 0.85,
   edge.width = 2 + 8 * abs(E(g)$weight),
-  main = paste("VAR residuals + glasso network (rho =", rho, ")")
+  main = paste("Sector network (ETF-based) – VAR residuals + glasso (rho =", rho, ")")
 )
 dev.off()
 

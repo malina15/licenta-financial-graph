@@ -1,5 +1,29 @@
 # NOTE PENTRU MINE – EXPLICAREA REZULTATELOR
 
+## Maparea ETF-urilor la sectoare economice
+
+În cadrul analizei sunt utilizate ETF-uri sectoriale americane, fiecare
+corespunzând unui sector distinct al economiei. În continuare este prezentată
+maparea dintre acronimele ETF-urilor și sectoarele economice aferente:
+
+| ETF | Sector economic |
+|-----|-----------------|
+| XLB | Materials |
+| XLE | Energy |
+| XLF | Financials |
+| XLI | Industrials |
+| XLK | Technology |
+| XLP | Consumer Staples |
+| XLU | Utilities |
+| XLV | Health Care |
+| XLY | Consumer Discretionary |
+| XLC | Communication Services |
+| XLRE | Real Estate |
+
+În toate figurile și tabelele ulterioare, nodurile sunt etichetate folosind
+acronimele ETF-urilor corespunzătoare sectoarelor din acest tabel.
+
+
 ## 1. Ce reprezintă rezultatele, în ansamblu
 
 Rezultatele provin din aplicarea următorului pipeline:
