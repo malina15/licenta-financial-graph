@@ -172,6 +172,22 @@ ulterioare ale altor sectoare.
 Diferențele dintre cele două structuri subliniază faptul că un sector poate fi central
 din punct de vedere structural fără a fi neapărat dominant în sens cauzal, și invers.
 
+## 7.2 Time windowing (rețea dinamică)
+
+Pentru a analiza dacă structura interdependențelor dintre sectoare este stabilă în timp,
+am extins analiza printr-o abordare de tip **rolling window**. Datele au fost împărțite
+în ferestre glisante de aproximativ un an bursier (252 observații), cu pas lunar (~21 zile).
+
+Pentru fiecare fereastră s-a repetat același pipeline utilizat în analiza principală:
+estimarea unui model VAR(1), extragerea reziduurilor, estimarea matricei de precizie prin
+graphical lasso (cu aceeași regularizare), construirea rețelei de corelații parțiale și
+calculul centralității (strength_abs).
+
+Rezultatul final este un set de valori ale centralității în timp, salvat în:
+`outputs/time_windows/centrality_strength_over_time.csv`. Acesta permite urmărirea
+evoluției rolului fiecărui sector în rețea și evidențiază faptul că importanța relativă
+a sectoarelor poate varia între perioade, sugerând o structură dinamică a pieței.
+
 ---
 
 ## 8. În final
