@@ -1,5 +1,29 @@
 # NOTE PENTRU MINE – EXPLICAREA REZULTATELOR
 
+## Maparea ETF-urilor la sectoare economice
+
+În cadrul analizei sunt utilizate ETF-uri sectoriale americane, fiecare
+corespunzând unui sector distinct al economiei. În continuare este prezentată
+maparea dintre acronimele ETF-urilor și sectoarele economice aferente:
+
+| ETF | Sector economic |
+|-----|-----------------|
+| XLB | Materials |
+| XLE | Energy |
+| XLF | Financials |
+| XLI | Industrials |
+| XLK | Technology |
+| XLP | Consumer Staples |
+| XLU | Utilities |
+| XLV | Health Care |
+| XLY | Consumer Discretionary |
+| XLC | Communication Services |
+| XLRE | Real Estate |
+
+În toate figurile și tabelele ulterioare, nodurile sunt etichetate folosind
+acronimele ETF-urilor corespunzătoare sectoarelor din acest tabel.
+
+
 ## 1. Ce reprezintă rezultatele, în ansamblu
 
 Rezultatele provin din aplicarea următorului pipeline:
@@ -171,6 +195,22 @@ ulterioare ale altor sectoare.
 
 Diferențele dintre cele două structuri subliniază faptul că un sector poate fi central
 din punct de vedere structural fără a fi neapărat dominant în sens cauzal, și invers.
+
+## 7.2 Time windowing (rețea dinamică)
+
+Pentru a analiza dacă structura interdependențelor dintre sectoare este stabilă în timp,
+am extins analiza printr-o abordare de tip **rolling window**. Datele au fost împărțite
+în ferestre glisante de aproximativ un an bursier (252 observații), cu pas lunar (~21 zile).
+
+Pentru fiecare fereastră s-a repetat același pipeline utilizat în analiza principală:
+estimarea unui model VAR(1), extragerea reziduurilor, estimarea matricei de precizie prin
+graphical lasso (cu aceeași regularizare), construirea rețelei de corelații parțiale și
+calculul centralității (strength_abs).
+
+Rezultatul final este un set de valori ale centralității în timp, salvat în:
+`outputs/time_windows/centrality_strength_over_time.csv`. Acesta permite urmărirea
+evoluției rolului fiecărui sector în rețea și evidențiază faptul că importanța relativă
+a sectoarelor poate varia între perioade, sugerând o structură dinamică a pieței.
 
 ---
 

@@ -3,6 +3,8 @@ library(glasso)
 library(igraph)
 library(xts)
 
+source("R/99_etf_labels.R")
+
 # Încărcarea seriilor de randamente calculate anterior
 returns <- readRDS("data/returns_sectors.rds")
 
@@ -93,6 +95,8 @@ W[adj == 0] <- 0
 g <- graph_from_adjacency_matrix(W, mode = "max", weighted = TRUE, diag = FALSE)
 V(g)$name <- colnames(Y)
 
+labels <- sapply(V(g)$name, make_label)
+
 # Selecția muchiilor cu pondere absolută maximă
 edges_df <- as_data_frame(g, what = "edges")
 write.csv(edges_df, "outputs/edges.csv", row.names = FALSE)
@@ -126,14 +130,25 @@ centrality_df <- centrality_df[order(-centrality_df$strength_abs), ]
 write.csv(centrality_df, "outputs/centrality.csv", row.names = FALSE)
 
 # Reprezentarea grafică a rețelei
-png("outputs/network.png", width = 1400, height = 900)
+lay <- layout_in_circle(g)
+lay <- lay * 2.6  # întindem cercul puțin
+
+png("outputs/network.png", width = 2600, height = 1600, res = 220)
+par(mar = c(1, 1, 3, 1))
+
 plot(
   g,
-  vertex.size = 32,
-  vertex.label.cex = 1.1,
-  edge.width = 2 + 8 * abs(E(g)$weight),
-  main = paste("VAR residuals + glasso network (rho =", rho, ")")
+  layout = lay,
+  vertex.size = 34,
+  vertex.label = labels,
+  vertex.label.cex = 0.9,
+  vertex.label.dist = 0,
+  vertex.label.color = "black",
+  edge.width = 1.5 + 6 * abs(E(g)$weight),
+  main = paste("Sector network (ETF-based) – VAR residuals + glasso (rho =", rho, ")")
 )
+
 dev.off()
+
 
 cat("DONE\n")
