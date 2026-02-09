@@ -32,6 +32,15 @@ cat("Chosen lag p (SC):", p, "\n\n")
 var_fit <- VAR(Y, p = p, type = "const")
 cat("VAR estimated.\n\n")
 
+dir.create("outputs", showWarnings = FALSE)
+
+# salvează returns (data frame / matrix cu coloane = tickere)
+saveRDS(returns, "outputs/returns.rds")
+
+# salvează modelul VAR (obiect vars::varest)
+saveRDS(var_fit, "outputs/var_fit.rds")
+
+
 # Calculul matricei de covarianță a reziduurilor VAR
 resid_mat <- residuals(var_fit)
 S <- cov(resid_mat)
@@ -81,7 +90,7 @@ W <- pcor
 W[adj == 0] <- 0
 
 # Construirea rețelei neorientate folosind pachetul igraph
-g <- graph_from_adjacency_matrix(W, mode = "undirected", weighted = TRUE, diag = FALSE)
+g <- graph_from_adjacency_matrix(W, mode = "max", weighted = TRUE, diag = FALSE)
 V(g)$name <- colnames(Y)
 
 # Selecția muchiilor cu pondere absolută maximă

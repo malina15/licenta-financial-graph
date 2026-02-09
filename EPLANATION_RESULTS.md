@@ -54,6 +54,16 @@ Interpretare economică:
 - sectoarele centrale pot avea un rol important în propagarea riscurilor
 - tehnologia și financiarul tind să fie mai influente
 
+### 3.1 Observație privind interpretarea centralităților
+
+Este important de subliniat că măsurile de centralitate calculate pentru această rețea reflectă
+importanța sectoarelor în structura **dependențelor contemporane directe**, estimate pe baza
+corelațiilor parțiale ale reziduurilor VAR.
+
+Prin urmare, centralitatea ridicată a unor sectoare (precum tehnologia sau financiarul)
+nu implică în mod necesar un rol cauzal în timp, ci indică o poziție structurală
+importantă în rețeaua de co-mișcări condiționate ale pieței.
+
 ---
 
 ## 4. Cele mai puternice legături (top10_edges.csv)
@@ -103,6 +113,36 @@ Ce reprezintă:
 Am verificat stabilitatea și proprietățile reziduurilor VAR înainte de a construi
 rețeaua, pentru a asigura corectitudinea rezultatelor.
 
+## 6.1 Rețeaua de cauzalitate Granger
+
+Pe lângă rețeaua bazată pe corelații parțiale, a fost construită și o a doua rețea
+financiară pe baza **cauzalității Granger**, utilizând coeficienții modelului VAR estimat.
+
+În această rețea:
+- fiecare nod reprezintă un sector economic;
+- o muchie orientată de la sectorul *i* către sectorul *j* indică faptul că
+valorile trecute ale sectorului *i* contribuie semnificativ la predicția sectorului *j*,
+condiționat de restul sectoarelor din sistem.
+
+Această abordare permite identificarea **canalelor dinamice de transmitere a informației**
+între sectoare, spre deosebire de rețeaua de corelații parțiale, care surprinde doar
+interdependențe contemporane.
+
+### Centralități în rețeaua Granger
+
+Pentru rețeaua de cauzalitate Granger au fost calculate măsuri de centralitate specifice
+rețelelor direcționate, incluzând indegree, outdegree, betweenness și PageRank.
+
+Conform scorului PageRank, cele mai centrale trei sectoare sunt:
+- XLE (Energy),
+- XLV (Health Care),
+- XLK (Technology).
+
+Sectorul energetic (XLE) apare ca nod dominant al rețelei Granger, sugerând un rol important
+în propagarea dinamică a șocurilor în timp. Sectorul sănătății (XLV) ocupă o poziție de
+intermediere, în timp ce sectorul tehnologic (XLK) se remarcă printr-un outdegree ridicat,
+indicând un rol activ în inițierea relațiilor cauzale către alte sectoare.
+
 ---
 
 ## 7. Ce pun efectiv în lucrare (Word)
@@ -115,6 +155,22 @@ rețeaua, pentru a asigura corectitudinea rezultatelor.
 
 Ideea-cheie:
 nu descriu codul, ci **ce spun rezultatele despre piețe**.
+
+## 7.1 Comparația dintre cele două tipuri de rețele
+
+Cele două rețele analizate surprind aspecte complementare ale interdependențelor
+sectoriale pe piața financiară.
+
+Rețeaua bazată pe corelații parțiale evidențiază **structura contemporană** a relațiilor
+directe dintre sectoare, identificând noduri central importante din punct de vedere
+structural.
+
+În schimb, rețeaua de cauzalitate Granger surprinde **mecanismele dinamice de transmitere
+în timp**, evidențiind sectoare care joacă un rol activ în influențarea evoluțiilor
+ulterioare ale altor sectoare.
+
+Diferențele dintre cele două structuri subliniază faptul că un sector poate fi central
+din punct de vedere structural fără a fi neapărat dominant în sens cauzal, și invers.
 
 ---
 

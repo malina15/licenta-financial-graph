@@ -6,3 +6,4 @@
 data/
 outputs/
 logs/
+outputs/*.rds
