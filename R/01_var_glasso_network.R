@@ -130,15 +130,25 @@ centrality_df <- centrality_df[order(-centrality_df$strength_abs), ]
 write.csv(centrality_df, "outputs/centrality.csv", row.names = FALSE)
 
 # Reprezentarea grafică a rețelei
-png("outputs/network.png", width = 1400, height = 900)
+lay <- layout_in_circle(g)
+lay <- lay * 2.6  # întindem cercul puțin
+
+png("outputs/network.png", width = 2600, height = 1600, res = 220)
+par(mar = c(1, 1, 3, 1))
+
 plot(
   g,
-  vertex.size = 32,
+  layout = lay,
+  vertex.size = 34,
   vertex.label = labels,
-  vertex.label.cex = 0.85,
-  edge.width = 2 + 8 * abs(E(g)$weight),
+  vertex.label.cex = 0.9,
+  vertex.label.dist = 0,
+  vertex.label.color = "black",
+  edge.width = 1.5 + 6 * abs(E(g)$weight),
   main = paste("Sector network (ETF-based) – VAR residuals + glasso (rho =", rho, ")")
 )
+
 dev.off()
+
 
 cat("DONE\n")

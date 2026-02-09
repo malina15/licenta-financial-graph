@@ -66,15 +66,27 @@ if (nrow(edges_df) > 0) E(g)$weight <- edges_df$weight
 # Etichete: ETF – Sector (IMPORTANT: după ce g există)
 labels <- sapply(V(g)$name, make_label)
 
-png("outputs/granger_network.png", width = 1400, height = 900)
+set.seed(1)
+
+# Layout stabil, fără suprapuneri
+lay <- layout_in_circle(g)
+lay <- lay * 2.6
+
+png("outputs/granger_network.png", width = 2600, height = 1600, res = 220)
+par(mar = c(1, 1, 3, 1))
+
 plot(
   g,
-  edge.arrow.size = 0.4,
-  vertex.size = 32,
+  layout = lay,
+  edge.arrow.size = 0.35,
+  vertex.size = 34,
   vertex.label = labels,
-  vertex.label.cex = 0.85,
+  vertex.label.cex = 0.9,
+  vertex.label.dist = 0,
+  vertex.label.color = "black",
   main = paste0("Granger network (alpha=", alpha, ", p=", p, ")")
 )
+
 dev.off()
 
 cat("DONE GRANGER\n")
