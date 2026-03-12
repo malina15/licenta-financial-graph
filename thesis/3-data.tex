@@ -1,25 +1,166 @@
 \chapter{Datele utilizate}
 
-Analiza empirica realizata in aceasta lucrare se bazeaza pe date financiare zilnice extrase din Yahoo Finance. Au fost selectate ETF uri sectoriale care urmaresc evolutia principalelor sectoare ale pietei de capital din Statele Unite. Alegerea acestor active este justificata prin faptul ca ele ofera o reprezentare sintetica a unor segmente economice importante si permit comparatii clare intre sectoare.
+Analiza empirica realizata in aceasta lucrare se bazeaza pe date financiare zilnice
+extrase din Yahoo Finance. Au fost selectate ETF-uri sectoriale care urmaresc
+evolutia principalelor sectoare ale pietei de capital din Statele Unite ale
+Americii. Alegerea acestor active este motivata de faptul ca ele ofera o
+reprezentare sintetica si lichida a unor segmente economice importante si permit
+comparatii clare intre sectoare, eliminand zgomotul specific companiilor individuale.
 
-Esantionul utilizat acopera perioada cuprinsa intre 20 iunie 2018 si 21 ianuarie 2026. Asa cum a fost observat si in discutia cu profesorul coordonator, acest interval nu este foarte lung pentru o analiza istorica ampla a pietei. Totusi, el este suficient pentru a permite aplicarea si ilustrarea metodelor statistice si grafice utilizate in lucrare. Pentru o lucrare de licenta, accentul cade in primul rand pe corectitudinea metodologica si pe interpretarea rezultatelor, nu pe exhaustivitatea istorica a esantionului.
+\section{Selectia activelor}
 
-Datele brute au fost descarcate automat prin scriptul \texttt{00\_download\_data.R}. Acest script preia seriile de preturi ajustate pentru activele selectate si construieste un set de date coerent, utilizabil in analiza ulterioara. Utilizarea unui script automatizat are avantajul reproductibilitatii. Orice actualizare a perioadei de observatie sau a listei de active poate fi integrata rapid, fara interventii manuale asupra fisierelor de date.
+Sectoarele analizate corespund clasificarii standard GICS (Global Industry
+Classification Standard) si sunt acoperite de urmatoarele ETF-uri emise de
+State Street Global Advisors (SPDR):
 
-Dupa descarcarea preturilor, pentru fiecare activ au fost calculate randamentele logaritmice zilnice. Daca $P_t$ reprezinta pretul ajustat la momentul $t$, atunci randamentul logaritmic este definit prin relatia
+\begin{table}[H]
+\centering
+\caption{ETF-urile sectoriale utilizate in analiza}
+\label{tab:etfs}
+\begin{tabularx}{\textwidth}{>{\bfseries}l l X}
+\toprule
+Ticker & Sector & Descriere \\
+\midrule
+XLB  & Materials              & Companii din sectorul materialelor de baza, incluzand produse chimice, metale si materiale pentru constructii. \\
+XLE  & Energy                 & Companii din energie, inclusiv petrol, gaze naturale si servicii energetice. \\
+XLF  & Financials             & Banci, companii de asigurari, servicii financiare si piete de capital. \\
+XLI  & Industrials            & Transport, productie industriala, servicii comerciale si bunuri de capital. \\
+XLK  & Technology             & Companii din tehnologie, software, hardware si semiconductori. \\
+XLP  & Consumer Staples       & Bunuri de consum de baza, retail alimentar, bauturi si produse de uz curent. \\
+XLU  & Utilities              & Furnizori de electricitate, apa, gaz si alte utilitati. \\
+XLV  & Health Care            & Farmaceutice, echipamente medicale, servicii medicale si biotehnologie. \\
+XLY  & Consumer Discretionary & Bunuri si servicii discretionare, retail non-esential, automobile si divertisment. \\
+XLRE & Real Estate            & Companii imobiliare si REIT-uri. \\
+XLC  & Communication Services & Telecomunicatii, media, servicii interactive si platforme de comunicare. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
+Aceste unsprezece sectoare acopera intreaga piata de capital americana si
+permit o analiza comprehensiva a structurii de dependenta.
+
+\section{Colectarea si preprocesarea datelor}
+
+Datele au fost descarcate automat in limbajul R folosind pachetul \texttt{quantmod}.
+Pentru fiecare ETF s-au extras preturile ajustate de inchidere (\textit{adjusted close}),
+deoarece acestea incorporeaza efectele dividendelor si ale altor ajustari corporative.
+
+Dupa descarcare, seriile au fost aliniate pe intersectia zilelor de tranzactionare
+disponibile pentru toate activele, astfel incat esantionul final sa fie sincronizat
+pe toate cele 11 sectoare. Pe baza acestor preturi s-au calculat randamentele
+logaritmice zilnice, exprimate procentual, prin formula
 \[
-r_t = \log(P_t) - \log(P_{t-1}).
+r_t^{(i)} = 100 \log\left(\frac{P_t^{(i)}}{P_{t-1}^{(i)}}\right).
 \]
 
-Acest tip de randament este preferat in analiza financiara deoarece are proprietati convenabile din punct de vedere statistic si permite agregarea mai usoara pe perioade mai lungi. In plus, randamentele sunt mai potrivite decat preturile pentru modelele de serii temporale, deoarece reduc tendintele de crestere pe termen lung si aduc seriile mai aproape de stationaritate.
+Aceasta transformare este standard in econometria financiara, deoarece randamentele
+logaritmice sunt mai adecvate pentru modelare decat nivelurile preturilor si sunt
+mai apropiate de ipoteza de stationaritate necesara in analiza VAR.
 
-Dupa calcularea randamentelor, datele sunt organizate intr o structura comuna in care fiecare coloana corespunde unui activ, iar fiecare linie corespunde unei zile de tranzactionare. In aceasta forma, setul de date poate fi folosit direct in modelele multivariate analizate in capitolele urmatoare.
+\section{Trasabilitatea fisierelor}
 
-Este important de remarcat ca, desi preturile activelor pot prezenta miscari similare, aceasta observatie nu este suficienta pentru a concluziona existenta unei relatii structurale intre ele. De aceea, in lucrare nu ne limitam la masuri descriptive simple, ci aplicam modele care separa dependenta dinamica de dependenta contemporana si care permit estimarea unor relatii conditionale.
+Pipeline-ul de prelucrare salveaza explicit preturile in fisierul
+\texttt{data/prices\_sectors.rds} si randamentele in
+\texttt{data/returns\_sectors.rds}. Aceasta separare intre etapa de descarcare
+si etapa de modelare creste reproductibilitatea analizei si permite verificarea
+independenta a fiecarei faze a procesarii.
 
-Pentru etichetarea si organizarea activelor a fost utilizat si scriptul \texttt{99\_etf\_labels.R}. Acesta ajuta la obtinerea unor denumiri clare si consistente in tabele, grafice si rezultate intermediare. Un astfel de detaliu este important pentru lizibilitatea lucrarii si pentru corelarea rezultatelor numerice cu interpretarea economica.
+\section{Perioada si frecventa de observatie}
 
-Din punct de vedere descriptiv, randamentele zilnice prezinta variabilitate diferita intre sectoare. Unele active au oscilatii mai reduse, in timp ce altele reactioneaza mai puternic la schimbarile de piata. Acest comportament sugereaza inca de la inceput faptul ca structura pietei nu este uniforma si justifica aplicarea unor metode care pot surprinde interdependentele dintre sectoare.
+Esantionul utilizat acopera perioada cuprinsa intre \textbf{01 ianuarie 6} si
+\textbf{21 ianuarie 2026}, la frecventa zilnica. Numarul total de zile
+tranzactionate este de aproximativ $T = 1900$ observatii per activ, dupa
+eliminarea zilelor fara tranzactionare si a valorilor lipsa.
 
-Setul de date astfel obtinut constituie baza tuturor analizelor din lucrare. Pe el sunt construite modelul VAR, diagnosticele asupra reziduurilor, selectia parametrului de regularizare pentru graphical lasso, masurile de centralitate si analiza pe ferestre temporale.
+Dupa cum a fost mentionat in discutia cu profesorul coordonator, acest interval
+nu este unul foarte lung pentru o analiza istorica comprehensiva. Totusi, el
+este suficient pentru aplicarea si ilustrarea metodelor statistice utilizate
+si include evenimente structurale majore care testeaza robustetea modelului:
+
+\begin{itemize}
+    \item \textbf{2018--2019}: Tensiuni comerciale SUA--China, volatilitate
+    moderata a pietelor.
+    \item \textbf{Februarie--Martie 2020}: Socul COVID-19, cea mai rapida
+    scadere a pietelor din istoria moderna, urmata de o recuperare puternica.
+    \item \textbf{2022}: Cresterea rapida a ratelor dobanzii de catre Fed,
+    cu impact diferentiat pe sectoare (sectoarele ciclice si cel imobiliar
+    au suferit cel mai mult).
+    \item \textbf{2023--2025}: Revenire diferentiata, dominata de sectorul
+    tehnologic prin emergenta inteligentei artificiale.
+\end{itemize}
+
+Aceste episoade creaza conditii naturale pentru a testa daca structura retelei
+financiare se modifica in timp, aspect analizat in Capitolul~8.
+
+\section{Preprocesarea datelor}
+
+\subsection{Descarcarea datelor}
+
+Datele au fost descarcate automat prin scriptul \texttt{00\_download\_data.R},
+utilizand pachetul \texttt{quantmod} \cite{ryan2024} din R. Scriptul preia
+preturile de inchidere ajustate pentru dividende si split-uri si construieste
+un set de date coerent in format \texttt{xts} (extensible time series).
+
+Utilizarea unui script automatizat are avantajul reproducibilitatii: orice
+actualizare a perioadei de observatie sau a listei de active poate fi integrata
+fara interventii manuale.
+
+\subsection{Calculul randamentelor logaritmice}
+
+Fie $P_{i,t}$ pretul ajustat al ETF-ului $i$ la momentul $t$. Randamentul
+logaritmic zilnic este definit prin:
+\begin{equation}
+    r_{i,t} = \ln P_{i,t} - \ln P_{i,t-1} = \ln\frac{P_{i,t}}{P_{i,t-1}},
+    \quad t = 2, \ldots, T.
+    \label{eq:logreturns}
+\end{equation}
+
+Aceasta transformare are mai multe avantaje fata de randamentele aritmetice
+$\frac{P_{i,t} - P_{i,t-1}}{P_{i,t-1}}$:
+\begin{enumerate}
+    \item \textit{Aditivitate temporala}: randamentele logaritmice pe perioade
+    mai lungi se obtin prin simpla suma a randamentelor zilnice.
+    \item \textit{Simetrie}: cresterile si scaderile procentuale sunt tratate
+    simetric.
+    \item \textit{Stationaritate}: seriile de randamente nu prezinta tendinte
+    de crestere pe termen lung, spre deosebire de preturi \cite{tsay2010}.
+\end{enumerate}
+
+\subsection{Structura setului de date}
+
+Dupa calcularea randamentelor, datele sunt organizate intr-o matrice
+$R \in \mathbb{R}^{T \times n}$, unde $T \approx 1900$ este numarul de zile
+tranzactionate si $n = 11$ este numarul de sectoare. Fiecare coloana corespunde
+unui ETF, iar fiecare linie corespunde unei zile de tranzactionare.
+
+\section{Proprietati statistice ale randamentelor}
+
+Randamentele zilnice ale ETF-urilor sectoriale prezinta proprietati statistice
+tipice datelor financiare, cunoscute in literatura sub numele de \textit{stilizate}
+\cite{cont2001}:
+
+\begin{itemize}
+    \item \textbf{Medie apropiata de zero}: consistent cu ipoteza de mers
+    aleatoriu, randamentele zilnice au medii statistice nesemnificativ diferite
+    de zero.
+    \item \textbf{Cozi groase}: kurtoza excesiva pozitiva indica distributii
+    cu cozi mai groase decat distributia normala, ceea ce inseamna o frecventa
+    mai mare a evenimentelor extreme.
+    \item \textbf{Asimetrie negativa}: randamentele negative extreme sunt mai
+    frecvente decat cele pozitive extreme, reflectand comportamentul asimetric
+    al pietelor in perioade de stres.
+    \item \textbf{Volatilitate grupata}: perioade de volatilitate ridicata
+    tind sa fie urmate de perioade de volatilitate ridicata (efectul ARCH).
+\end{itemize}
+
+Aceste proprietati justifica utilizarea unui model VAR aplicat pe randamente
+(nu pe preturi) si interpretarea prudenta a testelor de normalitate in etapa
+de diagnostic.
+
+\section{Etichetarea activelor}
+
+Pentru organizarea consistenta a rezultatelor, scriptul \texttt{99\_etf\_labels.R}
+defineste etichetele clare asociate fiecarui ticker. Aceasta facilitate este
+importanta pentru lizibilitatea graficelor si tabelelor de centralitate, in care
+nodurile retelei financiare sunt identificate prin numele sectorului (de exemplu,
+\texttt{XLK} $\to$ ``Tehnologie'').

@@ -3,16 +3,26 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[romanian]{babel}
-\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{setspace}
 \usepackage{indentfirst}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
 
 \geometry{margin=2.5cm}
 \onehalfspacing
+
+% Theorem environments
+\newtheorem{theorem}{Teorema}[chapter]
+\newtheorem{proposition}[theorem]{Propozitie}
+\newtheorem{definition}[theorem]{Definitie}
+\newtheorem{remark}[theorem]{Remarca}
+\newtheorem{corollary}[theorem]{Corolar}
 
 \begin{document}
 
