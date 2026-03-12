@@ -1,0 +1,25 @@
+\chapter{Datele utilizate}
+
+Analiza empirica realizata in aceasta lucrare se bazeaza pe date financiare zilnice extrase din Yahoo Finance. Au fost selectate ETF uri sectoriale care urmaresc evolutia principalelor sectoare ale pietei de capital din Statele Unite. Alegerea acestor active este justificata prin faptul ca ele ofera o reprezentare sintetica a unor segmente economice importante si permit comparatii clare intre sectoare.
+
+Esantionul utilizat acopera perioada cuprinsa intre 20 iunie 2018 si 21 ianuarie 2026. Asa cum a fost observat si in discutia cu profesorul coordonator, acest interval nu este foarte lung pentru o analiza istorica ampla a pietei. Totusi, el este suficient pentru a permite aplicarea si ilustrarea metodelor statistice si grafice utilizate in lucrare. Pentru o lucrare de licenta, accentul cade in primul rand pe corectitudinea metodologica si pe interpretarea rezultatelor, nu pe exhaustivitatea istorica a esantionului.
+
+Datele brute au fost descarcate automat prin scriptul \texttt{00\_download\_data.R}. Acest script preia seriile de preturi ajustate pentru activele selectate si construieste un set de date coerent, utilizabil in analiza ulterioara. Utilizarea unui script automatizat are avantajul reproductibilitatii. Orice actualizare a perioadei de observatie sau a listei de active poate fi integrata rapid, fara interventii manuale asupra fisierelor de date.
+
+Dupa descarcarea preturilor, pentru fiecare activ au fost calculate randamentele logaritmice zilnice. Daca $P_t$ reprezinta pretul ajustat la momentul $t$, atunci randamentul logaritmic este definit prin relatia
+
+\[
+r_t = \log(P_t) - \log(P_{t-1}).
+\]
+
+Acest tip de randament este preferat in analiza financiara deoarece are proprietati convenabile din punct de vedere statistic si permite agregarea mai usoara pe perioade mai lungi. In plus, randamentele sunt mai potrivite decat preturile pentru modelele de serii temporale, deoarece reduc tendintele de crestere pe termen lung si aduc seriile mai aproape de stationaritate.
+
+Dupa calcularea randamentelor, datele sunt organizate intr o structura comuna in care fiecare coloana corespunde unui activ, iar fiecare linie corespunde unei zile de tranzactionare. In aceasta forma, setul de date poate fi folosit direct in modelele multivariate analizate in capitolele urmatoare.
+
+Este important de remarcat ca, desi preturile activelor pot prezenta miscari similare, aceasta observatie nu este suficienta pentru a concluziona existenta unei relatii structurale intre ele. De aceea, in lucrare nu ne limitam la masuri descriptive simple, ci aplicam modele care separa dependenta dinamica de dependenta contemporana si care permit estimarea unor relatii conditionale.
+
+Pentru etichetarea si organizarea activelor a fost utilizat si scriptul \texttt{99\_etf\_labels.R}. Acesta ajuta la obtinerea unor denumiri clare si consistente in tabele, grafice si rezultate intermediare. Un astfel de detaliu este important pentru lizibilitatea lucrarii si pentru corelarea rezultatelor numerice cu interpretarea economica.
+
+Din punct de vedere descriptiv, randamentele zilnice prezinta variabilitate diferita intre sectoare. Unele active au oscilatii mai reduse, in timp ce altele reactioneaza mai puternic la schimbarile de piata. Acest comportament sugereaza inca de la inceput faptul ca structura pietei nu este uniforma si justifica aplicarea unor metode care pot surprinde interdependentele dintre sectoare.
+
+Setul de date astfel obtinut constituie baza tuturor analizelor din lucrare. Pe el sunt construite modelul VAR, diagnosticele asupra reziduurilor, selectia parametrului de regularizare pentru graphical lasso, masurile de centralitate si analiza pe ferestre temporale.

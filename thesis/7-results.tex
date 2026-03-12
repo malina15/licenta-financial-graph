@@ -1,0 +1,25 @@
+\chapter{Rezultate}
+
+Acest capitol este dedicat interpretarii rezultatelor obtinute in urma aplicarii metodologiei descrise anterior. Accentul este pus in primul rand pe semnificatia statistica a structurii estimate, iar apoi pe relevanta ei pentru intelegerea pietei financiare, in acord cu observatia profesorului coordonator.
+
+Rezultatul central al lucrarii este obtinerea unei retele financiare derivate din matricea de precizie estimate prin graphical lasso. Aceasta retea sintetizeaza dependenta conditionala dintre sectoarele incluse in analiza. Prin constructie, reteaua nu reflecta simple corelatii brute, ci relatii care raman semnificative dupa controlul pentru celelalte variabile din sistem.
+
+Una dintre primele constatari este faptul ca reteaua obtinuta nu are o structura uniforma. Unele noduri au un numar considerabil mai mare de conexiuni decat altele. Aceasta neuniformitate indica faptul ca anumite sectoare ocupa pozitii centrale in sistem, in timp ce altele joaca un rol mai degraba periferic.
+
+Masurile de centralitate calculate in proiect confirma aceasta observatie. Scriptul \texttt{05\_centrality\_measures.R} evidentiaza sectoarele care au degree ridicat, strength ridicat sau valori importante ale betweenness. Din punct de vedere statistic, aceste rezultate sugereaza ca influenta in retea nu este distribuita egal intre sectoare.
+
+Un nod cu degree ridicat poate fi interpretat ca fiind conectat direct cu mai multe componente ale pietei. Acest fapt sugereaza o capacitate mai mare de a reflecta sau transmite informatie. In mod similar, un nod cu strength ridicat are conexiuni mai intense, ceea ce poate indica legaturi conditionale mai puternice cu alte sectoare.
+
+Rezultatele de tip betweenness sunt deosebit de interesante. Un sector care apare frecvent pe drumurile minime dintre alte sectoare poate juca rolul unui intermediar structural. Chiar daca nu are neaparat cele mai multe conexiuni directe, el poate avea importanta mare in conectivitatea globala a retelei.
+
+Un alt rezultat important este legat de densitatea retelei. Densitatea finala reflecta compromisul realizat prin selectia parametrului de regularizare. O retea prea densa ar fi fost greu de interpretat si ar fi putut masca structura reala a relatiilor. O retea prea rara ar fi eliminat legaturi relevante. Din acest motiv, faptul ca reteaua finala are un numar moderat de muchii este un argument in favoarea adecvarii procedurii de selectie.
+
+Din perspectiva matematica, rezultatele sustin utilitatea metodei graphical lasso in constructia unei reprezentari sparse a dependentei conditionale. Faptul ca multe elemente ale matricii de precizie sunt estimate ca zero nu este o limitare, ci chiar esenta metodei. Raritatea structurii face posibila interpretarea clara a relatiilor directe dintre sectoare.
+
+Este important si faptul ca reteaua este construita dupa filtrarea dinamica prin modelul VAR. Aceasta inseamna ca muchiile observate trebuie interpretate ca legaturi intre socuri contemporane, nu ca simple efecte de memorie ale seriilor. Prin urmare, rezultatele obtinute sunt mai bine fundamentate statistic decat o simpla analiza bazata pe corelatii observate direct in randamente.
+
+Interpretarea economica a acestor rezultate trebuie facuta cu prudenta. Lucrarea nu isi propune sa stabileasca relatii cauzale puternice intre sectoare, ci sa identifice structuri de dependenta conditionala. Totusi, faptul ca anumite sectoare apar sistematic mai centrale poate sugera rolul lor special in organizarea pietei si in propagarea informatiei.
+
+Pentru sustinerea lucrarii, este recomandat ca acest capitol sa fie completat si cu referiri explicite la fisierele rezultate din proiect, cum ar fi \texttt{network.png}, \texttt{centrality.csv}, \texttt{edges.csv} si \texttt{top10\_edges.csv}. Aceste rezultate concrete vor permite o prezentare mai precisa a sectoarelor centrale si a celor mai importante muchii estimate.
+
+Per ansamblu, rezultatele confirma faptul ca analiza pietei prin metode grafice ofera informatii care nu sunt imediat vizibile in tabele de corelatii sau in evolutii individuale ale seriilor. Reteaua rezultata sintetizeaza structura interna a sistemului si evidentiaza in mod clar diferentele de rol dintre sectoare.

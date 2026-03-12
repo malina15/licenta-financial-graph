@@ -1,0 +1,35 @@
+\chapter{Estimarea matricii de precizie prin graphical lasso}
+
+Dupa eliminarea dependentei temporale prin modelul VAR, urmatoarea etapa consta in analiza dependentei contemporane dintre variabile. In mod natural, primul obiect matematic relevant este matricea de covarianta a reziduurilor. Totusi, pentru scopul lucrarii, matricea de covarianta nu este suficienta, deoarece ea masoara asocierea globala dintre variabile si nu separa efectele directe de cele indirecte.
+
+Pentru a surprinde relatiile conditionale dintre active, este necesara estimarea matricii de precizie, adica inversa matricii de covarianta. Daca notam prin $\Sigma$ matricea de covarianta a reziduurilor, atunci matricea de precizie este
+
+\[
+\Theta = \Sigma^{-1}.
+\]
+
+Aceasta matrice este esentiala in teoria grafurilor gaussiene. Elementele sale ofera informatie despre independenta conditionala. Mai precis, daca elementul $\theta_{ij}$ este zero, atunci variabilele $i$ si $j$ sunt independente conditionat de celelalte variabile din sistem.
+
+In practica, estimarea directa a matricii de precizie poate fi dificila sau instabila. Dificultatea apare mai ales atunci cand datele sunt zgomotoase sau cand structura reala a relatiilor este rara. De aceea, in literatura este utilizata frecvent metoda graphical lasso, propusa pentru a obtine estimatori stabili si interpretabili ai matricii de precizie \cite{friedman2008}.
+
+Metoda graphical lasso rezolva o problema de optimizare penalizata. Ideea de baza este ca se maximizeaza o functie de verosimilitate penalizata printr un termen de tip $L_1$, care incurajeaza aparitia elementelor nule in matricea estimata. In forma sa standard, problema poate fi scrisa astfel
+
+\[
+\max_{\Theta \succ 0} \left( \log \det(\Theta) - \operatorname{tr}(S \Theta) - \rho \|\Theta\|_1 \right),
+\]
+
+unde $S$ este matricea de covarianta empirica, iar $\rho > 0$ este parametrul de regularizare. Acest parametru controleaza nivelul de raritate al structurii estimate.
+
+Interpretarea parametrului $\rho$ este importanta. Daca valoarea sa este mica, penalizarea este redusa, iar reteaua rezultata poate deveni foarte densa. Daca valoarea sa este mare, multe elemente ale matricii de precizie sunt fortate spre zero, iar reteaua devine mai rara. In consecinta, alegerea lui $\rho$ afecteaza direct interpretabilitatea rezultatelor.
+
+In implementarea lucrarii, selectia parametrului de regularizare este tratata explicit in scriptul \texttt{03\_glasso\_selection.R}. Aceasta este o alegere metodologica foarte buna, deoarece arata ca reteaua finala nu este obtinuta arbitrar, ci pe baza unei proceduri argumentate. Din cate reiese din proiect, selectia s a facut pe o grila extinsa de valori si a fost luat in calcul un compromis intre criteriul BIC si densitatea retelei.
+
+Aceasta abordare este importanta si din punct de vedere statistic. O retea excesiv de densa devine greu de interpretat si poate include relatii slabe sau accidentale. O retea excesiv de rara poate pierde relatii relevante. Prin urmare, alegerea parametrului de regularizare trebuie sa urmareasca un echilibru intre fidelitatea fata de date si simplitatea structurii estimate.
+
+Avantajul metodei graphical lasso este dublu. Pe de o parte, ea furnizeaza un estimator robust al matricii de precizie. Pe de alta parte, produce in mod natural o structura grafica usor de interpretat. Elementele nenule ale matricii estimate definesc muchiile retelei financiare, iar elementele nule indica absenta unei legaturi conditionale directe.
+
+In literatura financiara, aceasta abordare este valoroasa deoarece permite separarea relatiilor directe de cele mediate prin alte variabile. De exemplu, doua sectoare pot parea corelate la prima vedere, dar aceasta corelatie poate fi explicata complet printr un al treilea sector dominant. Matricea de precizie are tocmai rolul de a evidentia legaturile care raman dupa controlul pentru restul sistemului.
+
+Din punct de vedere al lucrarii de licenta, aceasta etapa este una dintre cele mai importante, deoarece contine o componenta matematica clara si o motivatie statistica riguroasa. Ea raspunde cerintei formulate in ghidul facultatii, conform careia metodele utilizate trebuie prezentate si argumentate in corpul principal al lucrarii, nu doar aplicate mecanic. :contentReference[oaicite:0]{index=0}
+
+In concluzie, metoda graphical lasso transforma matricea de covarianta a reziduurilor intr un obiect mult mai informativ, si anume matricea de precizie rara. Aceasta matrice sta la baza construirii retelei financiare si permite analiza structurii de dependenta conditionala dintre sectoarele pietei.

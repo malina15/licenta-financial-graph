@@ -1,0 +1,23 @@
+\chapter{Analiza pe ferestre temporale}
+
+O directie suplimentara importanta a proiectului este analiza retelei pe ferestre temporale. Aceasta etapa extinde abordarea statica anterioara si permite investigarea modului in care structura pietei se modifica in timp.
+
+In implementare, aceasta analiza este realizata prin scripturile \texttt{06\_time\_window\_network.R} si \texttt{07\_write\_time\_window\_summary\_md.R}. Existenta acestor fisiere este un avantaj al proiectului, deoarece arata ca reteaua nu este studiata doar intr o forma agregata pe intregul esantion, ci si dinamic, pe subperioade.
+
+Ideea de baza este urmatoarea. In loc sa estimam o singura retea folosind toate observatiile disponibile, impartim esantionul in ferestre consecutive sau suprapuse si repetam procedura de estimare pentru fiecare interval. In acest mod, obtinem o succesiune de retele care pot fi comparate intre ele.
+
+Din punct de vedere statistic, aceasta metoda este utila deoarece relatiile dintre sectoare nu sunt neaparat stabile pe intreaga perioada analizata. Piata financiara trece prin faze diferite, caracterizate prin volatilitate crescuta, perioade de calm relativ sau modificari de regim. O singura retea estimata pe intregul esantion poate ascunde astfel de schimbari.
+
+Analiza pe ferestre temporale permite urmarirea evolutiei unor indicatori precum numarul de muchii, densitatea retelei sau sectorul dominant din fiecare fereastra. In proiect exista si fisierul \texttt{top\_sector\_per\_window.csv}, care sugereaza tocmai o astfel de sinteza a sectoarelor centrale in timp.
+
+Interpretarea acestui tip de analiza este foarte interesanta. Daca un anumit sector apare frecvent ca nod central in mai multe ferestre consecutive, atunci pozitia sa dominanta pare sa fie stabila. Daca, dimpotriva, sectorul central se schimba de la o fereastra la alta, acest fapt sugereaza o structura a pietei mai sensibila la contextul economic din perioada respectiva.
+
+De asemenea, variatia densitatii retelei de la o fereastra la alta poate indica schimbari in gradul de integrare al pietei. O crestere a densitatii poate sugera ca sectoarele au devenit mai interdependente in acea perioada. O scadere poate indica o fragmentare relativa a structurii de dependenta.
+
+Avantajul acestei etape este ca ea adauga profunzime analizei si arata ca metodele utilizate nu sunt aplicate intr un mod rigid. In plus, ea ofera un punct bun de legatura intre statistica si interpretarea economica, deoarece modificarile structurii retelei pot fi discutate in raport cu evenimente sau contexte economice mai largi.
+
+Totusi, trebuie mentionat si faptul ca analiza pe ferestre temporale presupune un compromis. Pe de o parte, ferestrele mai scurte permit surprinderea schimbarilor rapide. Pe de alta parte, ele reduc numarul de observatii disponibile pentru estimare, ceea ce poate afecta stabilitatea rezultatelor. Alegerea dimensiunii ferestrei trebuie deci facuta cu atentie.
+
+In contextul acestei lucrari, analiza pe ferestre temporale este valoroasa nu doar pentru concluziile sale concrete, ci si pentru faptul ca arata maturitatea proiectului. Ea demonstreaza ca reteaua financiara este tratata ca un obiect dinamic, iar nu ca o structura fixa valabila indiferent de perioada analizata.
+
+Acest capitol poate fi dezvoltat ulterior prin includerea unor tabele sau grafice suplimentare care sa arate cum evolueaza centralitatea sectoarelor in timp. Chiar si in forma actuala, insa, analiza pe ferestre temporale reprezinta o extensie consistenta si bine motivata a modelului principal.

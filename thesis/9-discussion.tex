@@ -1,0 +1,19 @@
+\chapter{Discutii si limite}
+
+Rezultatele obtinute in aceasta lucrare sustin utilitatea metodelor grafice pentru analiza pietelor financiare. Totusi, orice astfel de analiza trebuie insotita de o discutie onesta a limitelor sale. O lucrare bine inteleasa si bine argumentata este mai valoroasa decat una care lasa impresia unei certitudini excesive.
+
+Prima limita importanta este legata de dimensiunea esantionului. Intervalul 2018 pana in 2026 este suficient pentru o lucrare de licenta si pentru ilustrarea metodologiei, dar ramane relativ scurt pentru formularea unor concluzii generale de foarte lunga durata. Rezultatele trebuie interpretate in raport cu perioada concreta analizata.
+
+A doua limita este legata de selectia activelor. Lucrarea foloseste ETF uri sectoriale, ceea ce ofera o imagine sintetica si coerenta a pietei. Totusi, aceasta alegere inseamna si o anumita agregare. La nivelul companiilor individuale, structura dependentei ar putea fi diferita si mai complexa.
+
+O alta limita priveste ipotezele modelului. Modelul VAR este un instrument foarte util pentru descrierea dependentei dinamice, dar el ramane un model liniar. In pietele financiare pot aparea relatii neliniare, schimbari de regim sau efecte de volatilitate care nu sunt capturate complet in acest cadru.
+
+In mod similar, metoda graphical lasso produce o structura rara si usor de interpretat, dar rezultatul sau depinde de alegerea parametrului de regularizare. Chiar daca selectia acestuia a fost tratata atent in proiect, este important sa recunoastem ca alte criterii sau alte grile de selectie ar putea duce la retele usor diferite.
+
+Din punct de vedere interpretativ, trebuie facuta distinctia dintre dependenta conditionala si cauzalitate economica. Faptul ca doua sectoare sunt legate printr o muchie in retea nu inseamna automat ca unul il determina pe celalalt in sens economic. Reteaua descrie o structura statistica a relatiilor, nu un mecanism cauzal complet demonstrat.
+
+Totusi, aceste limite nu diminueaza valoarea lucrarii. Dimpotriva, ele arata clar domeniul de validitate al concluziilor si sugereaza directii de dezvoltare ulterioara. O continuare naturala ar fi extinderea perioadei de observatie, compararea mai multor criterii de selectie pentru parametrul de regularizare sau introducerea unor metode care surprind explicit variatia in timp a volatilitatilor.
+
+De asemenea, proiectul ar putea fi extins prin compararea retelei obtinute prin graphical lasso cu alte tipuri de retele, de exemplu retele bazate pe corelatii partiale estimate prin alte metode sau retele de cauzalitate de tip Granger. Prezenta scriptului \texttt{04\_granger\_network.R} arata deja o deschidere in aceasta directie.
+
+Prin urmare, limitele discutate aici trebuie vazute ca parte a unui demers stiintific normal. Ele nu invalideaza analiza, ci o aseaza intr un cadru metodologic realist si argumentat. Pentru o lucrare de licenta, aceasta claritate este un punct forte important.

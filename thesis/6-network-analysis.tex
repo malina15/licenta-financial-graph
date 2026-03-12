@@ -1,0 +1,27 @@
+\chapter{Analiza retelei financiare}
+
+Dupa estimarea matricii de precizie, urmatorul pas este construirea retelei financiare asociate. In aceasta reprezentare, fiecare nod corespunde unui sector sau unui ETF sectorial, iar existenta unei muchii intre doua noduri semnifica prezenta unei dependente conditionale intre variabilele corespunzatoare.
+
+Aceasta transformare dintr un obiect matricial intr un graf are un avantaj important. Ea permite interpretarea vizuala si structurala a relatiilor dintre active. In locul unei matrici numerice greu de urmarit, obtinem o retea in care se pot identifica rapid nodurile centrale, grupurile de sectoare interconectate si eventualele legaturi periferice.
+
+In implementarea practica a lucrarii, reteaua este construita in principal in scriptul \texttt{01\_var\_glasso\_network.R}. Ulterior, anumite caracteristici ale acesteia sunt analizate prin scriptul \texttt{05\_centrality\_measures.R}. Aceasta organizare arata o separare clara intre etapa de constructie si etapa de interpretare.
+
+Unul dintre primele aspecte relevante ale unei retele este densitatea sa. Densitatea masoara proportia muchiilor existente din totalul muchiilor posibile. O densitate mare indica o piata puternic interconectata, in timp ce o densitate mica sugereaza o structura mai fragmentata. In context financiar, densitatea poate oferi informatii despre gradul general de integrare al sectoarelor.
+
+Pe langa densitate, un rol central il joaca masurile de centralitate. Acestea permit cuantificarea importantei fiecarui nod in structura retelei. In lucrare sunt relevante in special masurile de tip degree centrality, betweenness si strength.
+
+Degree centrality masoara numarul de conexiuni ale unui nod. In cazul unei retele financiare, un sector cu degree mare este conectat direct cu multe alte sectoare si poate fi interpretat ca avand o pozitie influenta in structura pietei.
+
+Betweenness masoara de cate ori un nod se afla pe drumurile minime dintre alte perechi de noduri. Un sector cu betweenness mare poate juca rolul de intermediar in transmiterea influentelor intre parti diferite ale retelei. Din perspectiva riscului sistemic, astfel de noduri sunt deosebit de interesante.
+
+Strength este o generalizare ponderata a gradului si ia in considerare intensitatea conexiunilor. Daca muchiile sunt interpretate prin valori asociate elementelor nenule ale matricii de precizie, atunci strength ofera o imagine mai bogata asupra importantei unui nod decat simpla numarare a muchiilor.
+
+Analiza acestor indicatori este importanta deoarece permite ordonarea sectoarelor in functie de rolul lor structural. In loc sa afirmam doar ca reteaua are o anumita forma, putem identifica explicit ce sectoare sunt mai centrale, care sunt mai periferice si care ar putea contribui mai mult la propagarea socurilor.
+
+Un alt aspect important este identificarea grupurilor de noduri mai strans conectate. Chiar si atunci cand nu este aplicata formal o metoda de detectie a comunitatilor, simpla observatie a structurii retelei poate sugera existenta unor subgrupuri sectoriale. Aceste subgrupuri pot reflecta proximitati economice sau reactii similare la factori macroeconomici.
+
+Din punct de vedere statistic, trebuie subliniat ca reteaua construita nu este una bazata pe corelatii brute. Ea este derivata din matricea de precizie, ceea ce inseamna ca surprinde dependenta conditionala. Aceasta diferenta este importanta. O muchie din retea nu spune doar ca doua sectoare se misca impreuna, ci ca intre ele exista o legatura directa care nu poate fi explicata complet prin celelalte sectoare incluse in model.
+
+Prin urmare, analiza retelei reprezinta puntea dintre partea matematica a lucrarii si partea de interpretare economica. Structura grafului este obtinuta prin metode statistice riguroase, dar semnificatia acestei structuri poate fi discutata si in termeni de functionare a pietei financiare.
+
+In concluzie, reteaua financiara construita in aceasta lucrare nu este doar o reprezentare grafica atractiva, ci un instrument de sinteza a dependentei conditionale dintre active. Masurile de centralitate si proprietatile structurale ale grafului ofera baza pentru interpretarea rezultatelor din capitolul urmator.
