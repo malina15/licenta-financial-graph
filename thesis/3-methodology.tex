@@ -1,0 +1,9 @@
+\chapter{Metodologie}
+
+Dependentele dinamice dintre variabile sunt modelate folosind un model vector autoregresiv. Parametrii modelului sunt estimati folosind metoda celor mai mici patrate.
+
+Dupa estimarea modelului sunt obtinute reziduurile care reprezinta socurile sistemului.
+
+Pentru identificarea dependentei conditionale este utilizata metoda graphical lasso. Aceasta metoda estimeaza matricea de precizie prin rezolvarea unei probleme de optimizare care include un termen de penalizare.
+
+Parametrul de regularizare controleaza raritatea structurii rezultate si permite obtinerea unei retele interpretabile.

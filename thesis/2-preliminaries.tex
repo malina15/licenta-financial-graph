@@ -1,0 +1,35 @@
+\chapter{Preliminarii}
+
+In acest capitol sunt prezentate notiunile matematice si statistice utilizate in restul lucrarii. Scopul este formularea cadrului teoretic necesar pentru analiza dependentei dintre randamentele activelor financiare.
+
+Fie $X_t \in \mathbb{R}^n$ vectorul randamentelor zilnice observate la momentul $t$, unde fiecare componenta corespunde unui sector financiar sau unui ETF sectorial.
+
+Modelul vector autoregresiv de ordin $p$, notat VAR$(p)$, are forma
+
+\[
+X_t = A_1 X_{t-1} + A_2 X_{t-2} + \cdots + A_p X_{t-p} + \varepsilon_t,
+\]
+
+unde $A_1, A_2, \ldots, A_p \in \mathbb{R}^{n \times n}$ sunt matrici de coeficienti, iar $\varepsilon_t$ reprezinta vectorul reziduurilor, presupus cu medie zero si matrice de covarianta constanta.
+
+Modelul VAR este utilizat frecvent in analiza seriilor temporale multivariate deoarece permite descrierea interactiunilor dinamice dintre mai multe variabile observate simultan. In context financiar, acest model este potrivit pentru studierea relatiilor dintre randamentele mai multor active sau sectoare \cite{lutkepohl2005}.
+
+Dupa estimarea modelului VAR se obtin reziduurile $\varepsilon_t$, care reprezinta partea din evolutia seriei ce nu este explicata de dependenta temporala. Pe baza acestor reziduuri se estimeaza matricea de covarianta
+
+\[
+\Sigma = \operatorname{Cov}(\varepsilon_t).
+\]
+
+Aceasta matrice descrie dependenta contemporana dintre variabile dupa eliminarea componentei autoregresive. Pentru a studia relatiile conditionale dintre variabile, este util sa consideram inversa matricii de covarianta, numita matrice de precizie si notata cu
+
+\[
+\Theta = \Sigma^{-1}.
+\]
+
+Interpretarea acestei matrici este esentiala in constructia retelei financiare. Daca elementul $\theta_{ij}$ este zero, atunci variabilele $i$ si $j$ pot fi considerate independente conditionat de celelalte variabile din sistem. Daca elementul este diferit de zero, intre cele doua variabile exista o dependenta conditionala.
+
+In practica, estimarea directa a matricii de precizie poate fi instabila, mai ales atunci cand numarul variabilelor este mare sau cand structura de dependenta este complexa. Din acest motiv, in literatura este utilizata frecvent metoda graphical lasso, care produce estimatori rari ai matricii de precizie \cite{friedman2008}.
+
+Reteaua financiara asociata este definita astfel. Fiecare nod reprezinta un activ sau un sector financiar, iar o muchie intre doua noduri exista atunci cand elementul corespunzator din matricea de precizie este diferit de zero. Prin urmare, reteaua descrie structura dependentei conditionale dintre variabile si nu doar corelatii simple.
+
+Aceasta abordare este relevanta deoarece permite identificarea nodurilor centrale, a grupurilor de variabile puternic conectate si a mecanismelor prin care socurile se pot propaga in sistemul financiar.

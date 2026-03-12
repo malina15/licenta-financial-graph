@@ -1,0 +1,31 @@
+\chapter{Modelul VAR}
+
+Primul pas metodologic important al lucrarii este modelarea dependentei dinamice dintre randamentele activelor. In acest scop este utilizat un model vector autoregresiv. Ideea centrala a unui astfel de model este ca evolutia curenta a fiecarui activ poate depinde de valorile trecute ale tuturor activelor incluse in sistem.
+
+Fie $X_t \in \mathbb{R}^n$ vectorul randamentelor la momentul $t$. Un model VAR de ordin $p$ are forma
+
+\[
+X_t = A_1 X_{t-1} + A_2 X_{t-2} + \cdots + A_p X_{t-p} + \varepsilon_t,
+\]
+
+unde matricile $A_1, A_2, \ldots, A_p$ contin coeficientii autoregresivi, iar $\varepsilon_t$ reprezinta vectorul reziduurilor. Acest model generalizeaza autoregresia univariata la cazul multivariabil si este potrivit pentru date financiare in care mai multe serii interactioneaza simultan.
+
+In implementarea lucrarii, modelul VAR este construit in principal prin scriptul \texttt{01\_var\_glasso\_network.R}, iar verificarile suplimentare sunt realizate in \texttt{02\_var\_diagnostics.R}. Aceasta separare intre estimare si diagnostic este utila deoarece permite o analiza mai clara a fiecarei etape.
+
+Selectia ordinului $p$ al modelului este o problema importanta. Daca ordinul este prea mic, modelul nu surprinde suficient de bine dependenta dinamica. Daca este prea mare, modelul devine excesiv de complex si poate include fluctuatii nesemnificative. In lucrare, alegerea numarului de laguri este facuta folosind criteriul Schwarz, cunoscut si sub numele de BIC. Acest criteriu penalizeaza modelele prea complicate si favorizeaza o reprezentare parsimonioasa \cite{lutkepohl2005}.
+
+Rezultatul obtinut in analiza implementata este selectia unui model cu lag egal cu unu. Din punct de vedere statistic, aceasta alegere sugereaza ca o mare parte a dependentei dinamice relevante este capturata prin relatia dintre randamentele curente si randamentele din ziua anterioara. Pentru date zilnice financiare, aceasta concluzie este plauzibila, deoarece reactiile pietei tind sa fie rapide.
+
+Dupa estimarea modelului, atentia se muta asupra reziduurilor. Ele reprezinta componenta din date care nu este explicata de relatiile autoregresive. Din perspectiva lucrarii, reziduurile sunt esentiale, deoarece pe baza lor se construieste ulterior matricea de covarianta si apoi matricea de precizie.
+
+Un avantaj major al modelului VAR in acest context este faptul ca el permite separarea dependentei temporale de dependenta contemporana. Daca am analiza direct preturile sau chiar randamentele fara aceasta etapa, am amesteca efectele de memorie ale seriilor cu relatiile structurale dintre active. Prin filtrarea VAR, analiza ulterioara se concentreaza mai mult pe relatiile conditionale dintre socuri.
+
+Calitatea modelului trebuie verificata prin teste de diagnostic. In scriptul \texttt{02\_var\_diagnostics.R} sunt analizate proprietati precum stabilitatea modelului, autocorelatia reziduurilor, heteroscedasticitatea de tip ARCH si normalitatea. Aceste verificari sunt importante deoarece un model folosit doar formal, fara validare, nu ofera o baza credibila pentru etapele urmatoare.
+
+Testul de stabilitate urmareste daca radacinile asociate modelului se afla in interiorul cercului unitate. Daca aceasta conditie este indeplinita, modelul poate fi considerat stabil si interpretarile dinamice sunt legitime. Testul Portmanteau verifica absenta autocorelatiei reziduurilor. In mod ideal, dupa estimarea modelului, reziduurile nu ar trebui sa mai pastreze structura seriala semnificativa.
+
+Verificarile privind heteroscedasticitatea si normalitatea nu au doar un rol formal. In datele financiare este bine cunoscut faptul ca volatilitatea poate varia in timp si ca distributiile randamentelor pot avea cozi mai groase decat distributia normala. Prin urmare, rezultatele acestor teste trebuie interpretate realist. Scopul nu este obtinerea unui model perfect, ci a unui model suficient de bine specificat pentru a permite analiza structurii de dependenta.
+
+Din punct de vedere metodologic, aceasta etapa este una centrala in lucrare. Profesorul coordonator a insistat asupra prezentarii metodologiei si asupra interpretarii rezultatelor din punct de vedere statistic. Modelul VAR raspunde exact acestei cerinte deoarece ofera cadrul matematic in care sunt eliminate efectele autoregresive si sunt pregatite datele pentru analiza grafica.
+
+In concluzie, modelul VAR constituie filtrul statistic principal al lucrarii. Prin estimarea sa se obtin reziduuri care surprind socurile neexplicate de dinamica temporala. Aceste reziduuri stau la baza tuturor etapelor urmatoare, in special a estimarii matricii de covarianta si a construirii retelei financiare.
