@@ -1,35 +1,192 @@
 \chapter{Preliminarii}
 
-In acest capitol sunt prezentate notiunile matematice si statistice utilizate in restul lucrarii. Scopul este formularea cadrului teoretic necesar pentru analiza dependentei dintre randamentele activelor financiare.
+In acest capitol sunt prezentate notiunile matematice si statistice care stau la
+baza metodologiei utilizate in lucrare. Scopul este formularea unui cadru teoretic
+coerent, care sa justifice alegerile metodologice si sa faciliteze interpretarea
+rezultatelor.
 
-Fie $X_t \in \mathbb{R}^n$ vectorul randamentelor zilnice observate la momentul $t$, unde fiecare componenta corespunde unui sector financiar sau unui ETF sectorial.
+\section{Serii temporale multivariate}
 
-Modelul vector autoregresiv de ordin $p$, notat VAR$(p)$, are forma
+Fie $(\Omega, \mathcal{F}, P)$ un spatiu de probabilitate si fie
+$\{X_t\}_{t \in \mathbb{Z}}$ un proces stochastic cu valori in $\mathbb{R}^n$.
+Spunem ca procesul este \textit{stationat in sens larg} daca:
+\begin{enumerate}
+    \item $\mathbb{E}[X_t] = \mu$ pentru orice $t$, unde $\mu \in \mathbb{R}^n$
+    este constant,
+    \item $\mathrm{Cov}(X_t, X_{t-h}) = \Gamma(h)$ depinde doar de $h$, nu de $t$.
+\end{enumerate}
+Matricea $\Gamma(h) = \mathbb{E}[(X_t - \mu)(X_{t-h} - \mu)^\top]$ se numeste
+\textit{matricea de autocorelatie la lag $h$}.
 
+Stationaritatea este o conditie esentiala pentru modelele econometrice clasice.
+Randamentele logaritmice ale activelor financiare satisfac in general aceasta
+proprietate, spre deosebire de nivelurile preturilor, care prezinta tendinte
+de crestere pe termen lung \cite{tsay2010}.
+
+\section{Modelul vector autoregresiv}
+
+\begin{definition}
+Un proces $\{X_t\}$ cu valori in $\mathbb{R}^n$ satisface un model
+\textit{vector autoregresiv de ordin $p$}, notat VAR$(p)$, daca:
+\begin{equation}
+    X_t = \mu + A_1 X_{t-1} + A_2 X_{t-2} + \cdots + A_p X_{t-p} + \varepsilon_t,
+    \label{eq:var}
+\end{equation}
+unde $\mu \in \mathbb{R}^n$ este vectorul mediilor, $A_1, \ldots, A_p \in \mathbb{R}^{n \times n}$
+sunt matricile de coeficienti, iar $\{\varepsilon_t\}$ este un proces de zgomot alb
+cu $\mathbb{E}[\varepsilon_t] = 0$ si $\mathrm{Cov}(\varepsilon_t) = \Sigma$,
+unde $\Sigma$ este pozitiv definita.
+\end{definition}
+
+Scriem modelul VAR$(p)$ in forma compacta folosind operatorul de intarziere $L$,
+definit prin $L X_t = X_{t-1}$:
 \[
-X_t = A_1 X_{t-1} + A_2 X_{t-2} + \cdots + A_p X_{t-p} + \varepsilon_t,
+    \left(I_n - A_1 L - A_2 L^2 - \cdots - A_p L^p\right) X_t = \mu + \varepsilon_t.
+\]
+Polinomul matriceal $A(L) = I_n - A_1 L - \cdots - A_p L^p$ se numeste
+\textit{polinomul autoregresiv} al modelului.
+
+\begin{definition}
+Modelul VAR$(p)$ este \textit{stabil} daca toate radacinile ecuatiei
+$\det(A(z)) = 0$ se afla in exteriorul discului unitate, adica satisfac
+$|z| > 1$.
+\end{definition}
+
+Stabilitatea garanteaza existenta unei reprezentari stationare a procesului si
+este verificata in practica prin analiza valorilor proprii ale matricei
+companioana asociate modelului \cite{lutkepohl2005}.
+
+\subsection{Estimarea parametrilor}
+
+Coeficientii modelului VAR$(p)$ sunt estimati prin metoda celor mai mici patrate
+(OLS) aplicata ecuatie cu ecuatie. Fie $\mathbf{X} \in \mathbb{R}^{T \times n}$
+matricea observatiilor si $\mathbf{Z} \in \mathbb{R}^{T \times (np+1)}$ matricea
+regresiva care contine valorile intarziate si constanta. Estimatorul OLS este:
+\begin{equation}
+    \hat{B} = (\mathbf{Z}^\top \mathbf{Z})^{-1} \mathbf{Z}^\top \mathbf{X},
+    \label{eq:ols}
+\end{equation}
+unde $\hat{B}$ contine estimatii $\hat{\mu}, \hat{A}_1, \ldots, \hat{A}_p$.
+Matricea de covarianta a reziduurilor este estimata prin:
+\[
+    \hat{\Sigma} = \frac{1}{T - np - 1} \sum_{t=p+1}^{T} \hat{\varepsilon}_t \hat{\varepsilon}_t^\top.
 \]
 
-unde $A_1, A_2, \ldots, A_p \in \mathbb{R}^{n \times n}$ sunt matrici de coeficienti, iar $\varepsilon_t$ reprezinta vectorul reziduurilor, presupus cu medie zero si matrice de covarianta constanta.
+\subsection{Selectia ordinului}
 
-Modelul VAR este utilizat frecvent in analiza seriilor temporale multivariate deoarece permite descrierea interactiunilor dinamice dintre mai multe variabile observate simultan. In context financiar, acest model este potrivit pentru studierea relatiilor dintre randamentele mai multor active sau sectoare \cite{lutkepohl2005}.
+Ordinul $p$ este selectat prin minimizarea unui criteriu informational.
+\textit{Criteriul Schwarz} (BIC) este definit prin:
+\begin{equation}
+    \mathrm{BIC}(p) = \ln \det(\hat{\Sigma}_p) + \frac{\ln T}{T} \cdot p \cdot n^2,
+    \label{eq:bic}
+\end{equation}
+unde $\hat{\Sigma}_p$ este matricea de covarianta estimata a reziduurilor pentru
+un model de ordin $p$. BIC penalizeaza mai puternic modelele complexe comparativ
+cu AIC si tinde sa selecteze modele mai parsimonioase \cite{lutkepohl2005}.
 
-Dupa estimarea modelului VAR se obtin reziduurile $\varepsilon_t$, care reprezinta partea din evolutia seriei ce nu este explicata de dependenta temporala. Pe baza acestor reziduuri se estimeaza matricea de covarianta
+\section{Distributia gaussiana multivariata si independenta conditionala}
 
+Fie $X = (X_1, \ldots, X_n)^\top \sim \mathcal{N}_n(\mu, \Sigma)$ un vector
+gaussian cu medie $\mu$ si matrice de covarianta $\Sigma \succ 0$. Densitatea
+sa este:
 \[
-\Sigma = \operatorname{Cov}(\varepsilon_t).
+    f(x) = \frac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}}
+    \exp\!\left(-\frac{1}{2}(x-\mu)^\top \Sigma^{-1}(x-\mu)\right).
 \]
 
-Aceasta matrice descrie dependenta contemporana dintre variabile dupa eliminarea componentei autoregresive. Pentru a studia relatiile conditionale dintre variabile, este util sa consideram inversa matricii de covarianta, numita matrice de precizie si notata cu
+\begin{definition}
+\textit{Matricea de precizie} este $\Theta = \Sigma^{-1}$.
+\end{definition}
 
+\begin{proposition}
+Fie $X \sim \mathcal{N}_n(\mu, \Sigma)$ si fie $\Theta = \Sigma^{-1}$.
+Atunci $X_i$ si $X_j$ sunt \textit{independente conditional} fata de
+$X_{V \setminus \{i,j\}}$ (celelalte variabile) daca si numai daca
+$\theta_{ij} = 0$.
+\end{proposition}
+
+\begin{proof}
+Aceasta proprietate urmeaza din proprietatile distributiei gaussiene conditionale.
+Distributia conditionala $X_i \mid X_{V \setminus \{i\}}$ este gaussiana cu
+medie care depinde liniar de $X_j$ cu coeficient proportional cu $\theta_{ij}$.
+Prin urmare $\theta_{ij} = 0$ implica absenta lui $X_j$ din regresia lui $X_i$
+pe celelalte variabile, adica independenta conditionala \cite{lauritzen1996}.
+\end{proof}
+
+Aceasta propozitie este fundamentala pentru interpretarea retelei financiare:
+structura de zerouri a matricei $\Theta$ codifica exact structura de independenta
+conditionala a sistemului.
+
+\section{Grafuri gaussiene Markov}
+
+\begin{definition}
+Un \textit{graf neorientat} $G = (V, E)$ consta dintr-o multime finita de noduri
+$V = \{1, \ldots, n\}$ si o multime de muchii $E \subseteq \{\{i,j\} : i \neq j\}$.
+\end{definition}
+
+\begin{definition}
+Un \textit{model grafic gaussian} (graf Markov gaussian) asociat grafului
+$G = (V, E)$ este familia distributiilor $\mathcal{N}_n(\mu, \Sigma)$ pentru
+care $\theta_{ij} = 0$ ori de cate ori $\{i,j\} \notin E$.
+\end{definition}
+
+Prin urmare, muchia $\{i,j\} \in E$ exista daca si numai daca $\theta_{ij} \neq 0$,
+adica daca $X_i$ si $X_j$ sunt conditional dependente \cite{lauritzen1996}.
+Reteaua financiara construita in aceasta lucrare este tocmai un astfel de model
+grafic gaussian, in care nodurile sunt sectoarele pietei, iar muchiile reprezinta
+dependente conditionale estimate.
+
+\section{\texorpdfstring{Norma $\ell_1$}{Norma l1} si sparsitate}
+
+Fie $A \in \mathbb{R}^{n \times n}$. \textit{Norma elementwise} $\ell_1$ este
+definita prin:
 \[
-\Theta = \Sigma^{-1}.
+    \|A\|_1 = \sum_{i=1}^n \sum_{j=1}^n |a_{ij}|.
 \]
 
-Interpretarea acestei matrici este esentiala in constructia retelei financiare. Daca elementul $\theta_{ij}$ este zero, atunci variabilele $i$ si $j$ pot fi considerate independente conditionat de celelalte variabile din sistem. Daca elementul este diferit de zero, intre cele doua variabile exista o dependenta conditionala.
+In contextul estimarii matricei de precizie, penalizarea cu norma $\ell_1$
+incurajeaza solutii \textit{sparse} (cu multe elemente nule). Aceasta proprietate
+este esentiala pentru obtinerea unor grafuri financiare interpretabile, in care
+relatiile lipsite de semnificatie statistica sunt eliminate \cite{friedman2008}.
 
-In practica, estimarea directa a matricii de precizie poate fi instabila, mai ales atunci cand numarul variabilelor este mare sau cand structura de dependenta este complexa. Din acest motiv, in literatura este utilizata frecvent metoda graphical lasso, care produce estimatori rari ai matricii de precizie \cite{friedman2008}.
+\begin{remark}
+In aceasta lucrare, penalizarea de tip $\ell_1$ are un rol dublu. Pe de o parte,
+ea regularizeaza problema de estimare intr-un cadru de dimensiune relativ mare.
+Pe de alta parte, ea conduce la o structura rara a matricei de precizie, ceea ce
+permite interpretarea dependentei conditionale sub forma unei retele financiare
+inteligibile.
+\end{remark}
 
-Reteaua financiara asociata este definita astfel. Fiecare nod reprezinta un activ sau un sector financiar, iar o muchie intre doua noduri exista atunci cand elementul corespunzator din matricea de precizie este diferit de zero. Prin urmare, reteaua descrie structura dependentei conditionale dintre variabile si nu doar corelatii simple.
+\section{Masuri de centralitate in grafuri}
 
-Aceasta abordare este relevanta deoarece permite identificarea nodurilor centrale, a grupurilor de variabile puternic conectate si a mecanismelor prin care socurile se pot propaga in sistemul financiar.
+Fie $G = (V, E, w)$ un graf neorientat ponderat, cu $w_{ij} \geq 0$.
+
+\begin{definition}
+\textit{Gradul ponderat} (strength) al nodului $i$ este:
+\[
+    s_i = \sum_{j \in \mathcal{N}(i)} w_{ij},
+\]
+unde $\mathcal{N}(i) = \{j : \{i,j\} \in E\}$ este multimea vecinilor lui $i$.
+\end{definition}
+
+\begin{definition}
+\textit{Betweenness centrality} a nodului $i$ este:
+\[
+    C_B(i) = \sum_{\substack{s,t \in V \\ s \neq i \neq t}}
+    \frac{\sigma(s,t \mid i)}{\sigma(s,t)},
+\]
+unde $\sigma(s,t)$ este numarul de drumuri geodezice de la $s$ la $t$, iar
+$\sigma(s,t \mid i)$ este numarul celor care trec prin $i$.
+\end{definition}
+
+\begin{definition}
+\textit{Eigenvector centrality} a nodului $i$ este componenta $i$ a
+vectorului propriu dominant $\mathbf{x}$ al matricei de adiacenta ponderata $W$:
+\[
+    \lambda x_i = \sum_{j \in \mathcal{N}(i)} w_{ij} x_j, \quad \lambda = \lambda_{\max}(W).
+\]
+\end{definition}
+
+Aceste trei masuri ofera perspective complementare asupra importantei unui nod:
+gradul ponderat masoara conectivitatea directa, betweenness masoara rolul de
+intermediar, iar eigenvector centrality tine cont de importanta vecinilor.

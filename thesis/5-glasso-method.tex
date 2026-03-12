@@ -1,35 +1,180 @@
-\chapter{Estimarea matricii de precizie prin graphical lasso}
+\chapter{Estimarea matricei de precizie prin graphical lasso}
 
-Dupa eliminarea dependentei temporale prin modelul VAR, urmatoarea etapa consta in analiza dependentei contemporane dintre variabile. In mod natural, primul obiect matematic relevant este matricea de covarianta a reziduurilor. Totusi, pentru scopul lucrarii, matricea de covarianta nu este suficienta, deoarece ea masoara asocierea globala dintre variabile si nu separa efectele directe de cele indirecte.
+Dupa eliminarea dependentei temporale prin modelul VAR, atentia se muta asupra
+structurii de dependenta contemporana dintre reziduuri. Obiectivul este estimarea
+matricei de precizie $\Theta = \Sigma^{-1}$, ale carei elemente nenule definesc
+reteaua financiara.
 
-Pentru a surprinde relatiile conditionale dintre active, este necesara estimarea matricii de precizie, adica inversa matricii de covarianta. Daca notam prin $\Sigma$ matricea de covarianta a reziduurilor, atunci matricea de precizie este
+\section{Limitele estimarii directe}
 
+O prima idee ar fi sa estimam $\Theta$ prin inversarea matricei de covarianta
+empirica $\hat{\Sigma}$. Aceasta abordare are insa limitari serioase:
+
+\begin{enumerate}
+    \item \textit{Instabilitate numerica}: cand $n$ este de aceeasi ordine cu
+    $T$, $\hat{\Sigma}$ poate fi prost conditionata, iar $\hat{\Sigma}^{-1}$
+    amplifica erorile de estimare.
+    \item \textit{Lipsa de sparsitate}: inversa empirica este in general densa,
+    producand un graf complet greu de interpretat.
+    \item \textit{Supraajustare}: o matrice de precizie densa include inevitabil
+    relatii slabe sau accidentale care nu reflecta structura reala a datelor.
+\end{enumerate}
+
+In contextul acestei lucrari, cu $n = 11$ sectoare si $T \approx 1900$ observatii,
+raportul $n/T \approx 0.006$ este favorabil, dar sparsitatea este totusi
+dorita pentru interpretabilitate. Metoda graphical lasso rezolva ambele probleme.
+
+\section{Problema de optimizare penalizata}
+
+Metoda graphical lasso (GLasso), propusa de \cite{friedman2008}, estimeaza
+matricea de precizie prin maximizarea log-verosimilitatii penalizate:
+
+\begin{equation}
+    \hat{\Theta} = \underset{\Theta \succ 0}{\arg\max}
+    \Bigl[\log\det(\Theta) - \operatorname{tr}(\hat{S}\,\Theta)
+    - \rho\,\|\Theta\|_1\Bigr],
+    \label{eq:glasso}
+\end{equation}
+
+unde:
+\begin{itemize}
+    \item $\hat{S}$ este matricea de covarianta empirica a reziduurilor VAR,
+    \item $\rho > 0$ este parametrul de regularizare,
+    \item $\|\Theta\|_1 = \sum_{i \neq j} |\theta_{ij}|$ este norma $\ell_1$
+    aplicata elementelor extra-diagonale (diagonala nu este penalizata).
+\end{itemize}
+
+\subsection{Interpretarea termenilor}
+
+Termenul $\log\det(\Theta) - \operatorname{tr}(\hat{S}\,\Theta)$ reprezinta
+log-verosimilitatea gaussiana (pana la o constanta) in functie de $\Theta$.
+Maximizarea sa fara penalizare ar produce $\hat{\Theta} = \hat{S}^{-1}$,
+adica inversa empirica. Termenul de penalizare $-\rho\|\Theta\|_1$ forteaza
+elementele extra-diagonale mici spre zero, producand o matrice rara.
+
+\subsection{Convexitate si existenta solutiei}
+
+\begin{proposition}
+Problema de optimizare \eqref{eq:glasso} este strict concava in $\Theta \succ 0$
+si admite o solutie unica $\hat{\Theta}$.
+\end{proposition}
+
+\begin{proof}
+Functia obiectiv este suma a doua componente: $\log\det(\Theta)$, strict concava
+pe conul pozitiv definit, si $-\operatorname{tr}(\hat{S}\,\Theta) - \rho\|\Theta\|_1$,
+concava (liniara plus concava). Prin urmare, suma este strict concava, iar
+maximul pe multimea inchisa $\{\Theta : \Theta \succ 0\}$ este unic.
+\end{proof}
+
+\subsection{Algoritm de rezolvare}
+
+Problema \eqref{eq:glasso} este rezolvata prin algoritmul de coordonate-ciclice
+propus de \cite{friedman2008}. Ideea este de a optimiza alternant in fiecare
+coloana/linie a lui $\Theta$, mentinand celelalte fixe. Fiecare subproblema
+se reduce la un lasso standard, rezolvabila eficient. Convergenta algoritmului
+la solutia globala este garantata de convexitatea problemei.
+
+In R, metoda este implementata prin functia \texttt{glasso()} din pachetul
+\texttt{glasso} \cite{friedman2019}, apelata in scriptul
+\texttt{01\_var\_glasso\_network.R}.
+
+\section{Selectia parametrului de regularizare}
+
+Parametrul $\rho$ controleaza fundamental rezultatul:
+\begin{itemize}
+    \item $\rho \to 0$: $\hat{\Theta} \to \hat{S}^{-1}$, graf complet.
+    \item $\rho \to \infty$: $\hat{\Theta} \to \operatorname{diag}(\hat{S})^{-1}$,
+    graf fara nicio muchie.
+\end{itemize}
+
+Alegerea valorii optime $\hat{\rho}$ este realizata in scriptul
+\texttt{03\_glasso\_selection.R} prin doua criterii complementare.
+
+\subsection{Criteriul BIC pentru graphical models}
+
+Criteriul BIC adaptat pentru modele grafice gaussiene \cite{yuan2007} este:
+\begin{equation}
+    \mathrm{BIC}(\rho) = -T\Bigl[\log\det(\hat{\Theta}_\rho)
+    - \operatorname{tr}(\hat{S}\,\hat{\Theta}_\rho)\Bigr]
+    + \ln(T) \cdot |\hat{E}_\rho|,
+    \label{eq:bic_glasso}
+\end{equation}
+unde $|\hat{E}_\rho|$ este numarul de elemente extra-diagonale nenule ale lui
+$\hat{\Theta}_\rho$ (numarul de muchii estimate). Valoarea optima este:
 \[
-\Theta = \Sigma^{-1}.
+    \hat{\rho} = \arg\min_{\rho > 0} \mathrm{BIC}(\rho).
 \]
 
-Aceasta matrice este esentiala in teoria grafurilor gaussiene. Elementele sale ofera informatie despre independenta conditionala. Mai precis, daca elementul $\theta_{ij}$ este zero, atunci variabilele $i$ si $j$ sunt independente conditionat de celelalte variabile din sistem.
+\subsection{Analiza pe grila de valori}
 
-In practica, estimarea directa a matricii de precizie poate fi dificila sau instabila. Dificultatea apare mai ales atunci cand datele sunt zgomotoase sau cand structura reala a relatiilor este rara. De aceea, in literatura este utilizata frecvent metoda graphical lasso, propusa pentru a obtine estimatori stabili si interpretabili ai matricii de precizie \cite{friedman2008}.
-
-Metoda graphical lasso rezolva o problema de optimizare penalizata. Ideea de baza este ca se maximizeaza o functie de verosimilitate penalizata printr un termen de tip $L_1$, care incurajeaza aparitia elementelor nule in matricea estimata. In forma sa standard, problema poate fi scrisa astfel
-
+Selectia este realizata pe o grila logaritmica de valori
+$\rho \in \{0.001, 0.002, \ldots, 0.5\}$. Pentru fiecare valoare, se estimeaza
+$\hat{\Theta}_\rho$ si se calculeaza $\mathrm{BIC}(\rho)$ si densitatea retelei:
 \[
-\max_{\Theta \succ 0} \left( \log \det(\Theta) - \operatorname{tr}(S \Theta) - \rho \|\Theta\|_1 \right),
+    \mathrm{densitate}(\rho) = \frac{|\hat{E}_\rho|}{n(n-1)/2}.
 \]
 
-unde $S$ este matricea de covarianta empirica, iar $\rho > 0$ este parametrul de regularizare. Acest parametru controleaza nivelul de raritate al structurii estimate.
+Compromisul dintre fidelitatea fata de date si parsimonia modelului este
+esential: o retea excesiv de densa este greu de interpretat, iar una excesiv
+de rara poate pierde relatii relevante.
 
-Interpretarea parametrului $\rho$ este importanta. Daca valoarea sa este mica, penalizarea este redusa, iar reteaua rezultata poate deveni foarte densa. Daca valoarea sa este mare, multe elemente ale matricii de precizie sunt fortate spre zero, iar reteaua devine mai rara. In consecinta, alegerea lui $\rho$ afecteaza direct interpretabilitatea rezultatelor.
+\section{Proprietati statistice ale estimatorului GLasso}
 
-In implementarea lucrarii, selectia parametrului de regularizare este tratata explicit in scriptul \texttt{03\_glasso\_selection.R}. Aceasta este o alegere metodologica foarte buna, deoarece arata ca reteaua finala nu este obtinuta arbitrar, ci pe baza unei proceduri argumentate. Din cate reiese din proiect, selectia s a facut pe o grila extinsa de valori si a fost luat in calcul un compromis intre criteriul BIC si densitatea retelei.
+\begin{proposition}[Consistenta, \cite{ravikumar2011}]
+Sub conditii de regularitate asupra structurii reale a lui $\Theta^*$ si cu
+$\rho \sim \sqrt{\ln n / T}$, estimatorul GLasso satisface:
+\[
+    \|\hat{\Theta}_\rho - \Theta^*\|_F = O_P\!\left(\sqrt{\frac{n \ln n}{T}}\right),
+\]
+si recupereaza structura corecta a grafului cu probabilitate tending la 1.
+\end{proposition}
 
-Aceasta abordare este importanta si din punct de vedere statistic. O retea excesiv de densa devine greu de interpretat si poate include relatii slabe sau accidentale. O retea excesiv de rara poate pierde relatii relevante. Prin urmare, alegerea parametrului de regularizare trebuie sa urmareasca un echilibru intre fidelitatea fata de date si simplitatea structurii estimate.
+Aceasta proprietate garanteaza ca, pentru un numar suficient de mare de
+observatii, structura retelei estimate converge la structura adevarata a
+dependentelor conditionale.
 
-Avantajul metodei graphical lasso este dublu. Pe de o parte, ea furnizeaza un estimator robust al matricii de precizie. Pe de alta parte, produce in mod natural o structura grafica usor de interpretat. Elementele nenule ale matricii estimate definesc muchiile retelei financiare, iar elementele nule indica absenta unei legaturi conditionale directe.
+\section{De la matricea de precizie la retea}
 
-In literatura financiara, aceasta abordare este valoroasa deoarece permite separarea relatiilor directe de cele mediate prin alte variabile. De exemplu, doua sectoare pot parea corelate la prima vedere, dar aceasta corelatie poate fi explicata complet printr un al treilea sector dominant. Matricea de precizie are tocmai rolul de a evidentia legaturile care raman dupa controlul pentru restul sistemului.
+Odata estimata $\hat{\Theta}$, reteaua financiara este definita astfel:
+\begin{itemize}
+    \item \textbf{Noduri}: $V = \{1, \ldots, 11\}$, corespunzand celor 11 sectoare.
+    \item \textbf{Muchii}: $\{i,j\} \in E \iff \hat{\theta}_{ij} \neq 0$ si $i \neq j$.
+    \item \textbf{Ponderi}: $w_{ij} = |\hat{\theta}_{ij}|$, reprezentand intensitatea
+    dependentei conditionale.
+\end{itemize}
 
-Din punct de vedere al lucrarii de licenta, aceasta etapa este una dintre cele mai importante, deoarece contine o componenta matematica clara si o motivatie statistica riguroasa. Ea raspunde cerintei formulate in ghidul facultatii, conform careia metodele utilizate trebuie prezentate si argumentate in corpul principal al lucrarii, nu doar aplicate mecanic. :contentReference[oaicite:0]{index=0}
+Prin constructie, aceasta retea nu reflecta corelatii brute, ci dependente
+conditionale: o muchie intre sectoarele $i$ si $j$ indica o legatura directa
+care persista dupa controlul pentru toate celelalte sectoare. Aceasta proprietate
+este cea care face reteaua informativa din punct de vedere economic.
 
-In concluzie, metoda graphical lasso transforma matricea de covarianta a reziduurilor intr un obiect mult mai informativ, si anume matricea de precizie rara. Aceasta matrice sta la baza construirii retelei financiare si permite analiza structurii de dependenta conditionala dintre sectoarele pietei.
+\section{Selectia parametrului de regularizare}
+
+Un element central al metodei graphical lasso este alegerea parametrului de
+regularizare $\rho$. Acesta controleaza compromisul dintre fidelitatea fata de
+date si raritatea structurii estimate. Pentru valori mici ale lui $\rho$,
+matricea de precizie estimata tinde sa fie mai densa, iar reteaua rezultata
+devine mai greu de interpretat. Pentru valori mari ale lui $\rho$, multe muchii
+sunt eliminate, iar reteaua devine mai rara.
+
+In implementarea lucrarii, sensibilitatea fata de acest parametru este analizata
+pe o grila de valori, iar pentru fiecare valoare sunt evaluate densitatea
+retelei si un criteriu de tip BIC. Aceasta analiza are rolul de a arata cum se
+modifica structura estimata atunci cand regularizarea devine mai puternica.
+
+Din punct de vedere statistic, alegerea lui $\rho$ nu este doar o decizie
+numerica, ci una interpretativa. O retea prea densa poate masca relatiile
+esentiale printr-un exces de muchii slabe, in timp ce o retea prea rara poate
+omite legaturi conditionale reale.
+
+\section{Legatura cu implementarea empirica}
+
+In analiza principala si in analiza pe ferestre temporale se foloseste aceeasi
+valoare a penalizarii, pentru a pastra comparabilitatea intre rezultatele
+obtinute. Astfel, modificarile observate in structura retelei de la o fereastra
+la alta pot fi atribuite mai usor schimbarilor din date si nu unei modificari
+a parametrului de regularizare.
+
+Aceasta decizie metodologica este importanta in special in capitolul dedicat
+ferestrelor temporale, unde interesul principal este compararea topologiei
+retelei in timp, nu recalibrarea separata a modelului pentru fiecare subesantion.

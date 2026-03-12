@@ -1,9 +1,92 @@
 \chapter{Introducere}
 
-Studiul relatiilor dintre active financiare reprezinta o problema importanta in analiza pietelor financiare. Evolutia unui sector economic poate influenta evolutia altor sectoare prin mecanisme macroeconomice sau prin transmiterea informatiei.
+Studiul relatiilor dintre sectoarele pietei financiare reprezinta o problema centrala
+atat in finantele cantitative, cat si in econometria moderna. Intelegerea modului in
+care un sector economic ii influenteaza pe ceilalti are implicatii directe pentru
+gestiunea riscului, diversificarea portofoliilor si monitorizarea stabilitatii
+sistemului financiar in ansamblu.
 
-In aceasta lucrare sunt utilizate metode statistice moderne pentru a studia structura dependentei dintre sectoare ale pietei bursiere.
+In mod traditional, dependenta dintre active financiare a fost masurata prin
+intermediul coeficientilor de corelatie Pearson. Aceasta abordare are insa limitari
+importante. Corelatia simpla nu distinge intre o relatie directa si una mediata
+printr-un factor comun. Doua sectoare pot parea corelate doar pentru ca ambele
+reactioneaza la acelasi factor macroeconomic, fara a exista o legatura directa
+intre ele. Mai mult, corelatia nu surprinde dependenta temporala: un sector poate
+reactiona cu intarziere la evolutia altui sector, efect pe care o simpla masura
+de asociere statica nu il poate evidentia.
 
-Abordarea utilizata combina modele vector autoregresive cu metode de regularizare pentru estimarea matricii de precizie. Rezultatul este reprezentat sub forma unei retele financiare care descrie dependentele conditionale dintre variabile.
+Aceste limitari au motivat dezvoltarea unor cadre metodologice mai sofisticate,
+care combina modelarea seriilor temporale cu tehnici de estimare parsimonioasa.
+In aceasta lucrare este adoptata o astfel de abordare, structurata in doua etape
+principale. In prima etapa, dependenta temporala dintre sectoare este modelata
+printr-un model vector autoregresiv (VAR). Reziduurile acestui model capteaza
+componenta neanticipata a evolutiei fiecarui sector, curatata de efectele de
+memorie ale seriilor. In a doua etapa, structura de dependenta conditionala
+dintre aceste reziduuri este estimata prin metoda graphical lasso, care produce
+o matrice de precizie rara ce poate fi interpretata ca un graf financiar.
 
-Analiza de retea permite identificarea sectoarelor centrale si a structurii generale a pietei.
+Cadrul teoretic al acestei abordari provine din teoria grafurilor gaussiene
+\cite{lauritzen1996}, care stabileste o corespondenta riguroasa intre zerouri
+ale matricei de precizie si independenta conditionala. Prin urmare, graful
+obtinut nu este o simpla reprezentare vizuala, ci un obiect matematic cu
+semnificatie statistica precisa: o muchie intre doua noduri indica existenta
+unei dependente conditionale directe, care persista dupa controlul pentru
+toate celelalte sectoare din sistem.
+
+\section{Motivatia si contextul lucrarii}
+
+Alegerea ETF-urilor sectoriale americane ca obiect de studiu este motivata de
+mai multe considerente. In primul rand, aceste instrumente financiare ofera
+o reprezentare sintetica si lichida a principalelor segmente ale economiei
+americane. Spre deosebire de actiunile individuale, ETF-urile sectoriale reduc
+zgomotul specific companiei si reflecta mai fidel dinamica sectoriala. In al
+doilea rand, piata americana este cea mai studiata si mai lichida piata de capital
+din lume, ceea ce face ca rezultatele obtinute sa fie comparabile cu literatura
+de specialitate existenta.
+
+Perioada analizata, cuprinsa intre 01 ianuarie 2016 si 21 ianuarie 2026, include
+evenimente structurale majore cu impact semnificativ asupra pietelor financiare.
+Pandemia COVID-19 din 2020 a provocat o dislocare masiva si sincronizata a
+tuturor sectoarelor, urmata de o recuperare diferentiata. Perioada 2022--2023
+a fost marcata de o politica monetara restrictiva a Rezervei Federale americane,
+cu rate ale dobanzii in crestere rapida, care a afectat diferit sectoarele
+ciclice fata de cele defensive. Aceste evenimente reprezinta teste naturale
+pentru stabilitatea structurii retelei financiare si justifica analiza pe
+ferestre temporale inclusa in lucrare.
+
+\section{Obiectivele lucrarii}
+
+Principalele obiective ale lucrarii sunt urmatoarele:
+
+\begin{enumerate}
+    \item Prezentarea riguroasa a cadrului matematic si statistic utilizat,
+    incluzand teoria modelelor VAR, estimarea prin graphical lasso si teoria
+    grafurilor gaussiene.
+
+    \item Estimarea unui model VAR de ordin optim pe randamentele logaritmice
+    ale ETF-urilor sectoriale si verificarea calitatii sale prin teste de
+    diagnostic.
+
+    \item Estimarea matricei de precizie prin graphical lasso cu selectia
+    parametrului de regularizare prin criterii informationale.
+
+    \item Construirea si analiza retelei financiare rezultate, cu accent pe
+    masurile de centralitate si structura grafica.
+
+    \item Investigarea dinamicii temporale a structurii retelei prin analiza
+    pe ferestre temporale rulante.
+\end{enumerate}
+
+\section{Structura lucrarii}
+
+Lucrarea este organizata dupa cum urmeaza. Capitolul~2 prezinta preliminariile
+matematice necesare: notiuni de serii temporale, modele VAR, distributii
+gaussiene multivariate si grafuri probabilistice. Capitolul~3 descrie datele
+utilizate, procedura de descarcare si preprocesare si proprietatile statistice
+ale randamentelor. Capitolul~4 este dedicat modelului VAR: specificare, estimare,
+selectia ordinului si diagnostice. Capitolul~5 prezinta metoda graphical lasso,
+problema de optimizare si selectia parametrului de regularizare. Capitolul~6
+descrie constructia retelei financiare si masurile de centralitate utilizate.
+Capitolul~7 prezinta si interpreteaza rezultatele obtinute. Capitolul~8 extinde
+analiza la ferestre temporale. Capitolul~9 discuta limitele metodologiei, iar
+Capitolul~10 sintetizeaza concluziile.

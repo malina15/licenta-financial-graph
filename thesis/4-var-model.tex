@@ -1,31 +1,188 @@
 \chapter{Modelul VAR}
 
-Primul pas metodologic important al lucrarii este modelarea dependentei dinamice dintre randamentele activelor. In acest scop este utilizat un model vector autoregresiv. Ideea centrala a unui astfel de model este ca evolutia curenta a fiecarui activ poate depinde de valorile trecute ale tuturor activelor incluse in sistem.
+Primul pas metodologic al lucrarii este modelarea dependentei dinamice dintre
+randamentele activelor. In acest scop este utilizat un model vector autoregresiv
+(VAR). Ideea centrala este ca evolutia curenta a fiecarui sector poate depinde
+de valorile trecute ale tuturor sectoarelor incluse in sistem. Prin filtrarea
+VAR, componenta autoregresiva este eliminata, iar reziduurile raman pentru
+analiza dependentei contemporane.
 
-Fie $X_t \in \mathbb{R}^n$ vectorul randamentelor la momentul $t$. Un model VAR de ordin $p$ are forma
+\section{Specificarea modelului}
 
+Fie $X_t = (r_{1,t}, r_{2,t}, \ldots, r_{n,t})^\top \in \mathbb{R}^n$ vectorul
+randamentelor logaritmice zilnice ale celor $n = 11$ sectoare la momentul $t$.
+Modelul VAR de ordin $p$, definit formal in Capitolul~2, are forma:
+\begin{equation}
+    X_t = \mu + \sum_{k=1}^{p} A_k X_{t-k} + \varepsilon_t,
+    \label{eq:var_main}
+\end{equation}
+unde $\mu \in \mathbb{R}^n$ este vectorul constantelor, $A_k \in \mathbb{R}^{n \times n}$
+sunt matricile de coeficienti la lag-ul $k$, iar $\varepsilon_t \sim (0, \Sigma)$
+este vectorul de reziduuri contemporane.
+
+\section{Selectia ordinului}
+
+Alegerea ordinului $p$ al modelului este o etapa critica. Un ordin prea mic
+lasa dependente temporale nemodelate in reziduuri, contaminand analiza ulterioara.
+Un ordin prea mare creste dimensionalitatea inutila si reduce precizia estimatiei.
+
+In lucrare, selectia ordinului este realizata prin minimizarea criteriului BIC
+(ecuatia \eqref{eq:bic} din Capitolul~2). Rezultatul obtinut este:
+\begin{equation}
+    \hat{p} = 1.
+    \label{eq:order}
+\end{equation}
+
+Alegerea unui VAR(1) este plauzibila pentru date financiare zilnice. Randamentele
+actiunilor au memorie scurta, iar reactiile pietei la informatii noi sunt in
+general rapide \cite{fama1970}. Un lag de o zi este suficient pentru a capta
+efectele de autocorelare semnificative.
+
+\subsection{Forma VAR(1)}
+
+In cazul $p = 1$, modelul devine:
+\begin{equation}
+    X_t = \mu + A_1 X_{t-1} + \varepsilon_t,
+    \label{eq:var1}
+\end{equation}
+unde $A_1 \in \mathbb{R}^{11 \times 11}$ este matricea de coeficienti la lag 1.
+Elementul $(i,j)$ al lui $A_1$, notat $a_{ij}^{(1)}$, masoara efectul dinamic
+al randamentului sectorului $j$ din ziua precedenta asupra randamentului
+sectorului $i$ in ziua curenta, dupa controlul pentru toate celelalte sectoare.
+
+\section{Strategia de estimare}
+
+Implementarea empirica urmeaza o succesiune clara de pasi. Mai intai, pe baza
+randamentelor zilnice ale celor 11 ETF-uri sectoriale, se selecteaza ordinul
+modelului VAR prin criterii informationale, folosind o valoare maxima
+\texttt{lag.max = 10}. In analiza finala este ales ordinul recomandat de
+criteriul Schwarz, deoarece acesta favorizeaza specificatii mai parsimonioase.
+
+Ulterior, modelul VAR este estimat cu termen constant, iar reziduurile obtinute
+sunt extrase pentru etapa urmatoare a analizei. Ideea metodologica esentiala a
+lucrarii este ca modelul VAR nu reprezinta scopul final al modelarii, ci un
+mecanism de filtrare a dependentei temporale liniare. Reteaua financiara nu este
+construita direct din randamentele brute, ci din structura contemporana ramasa
+in reziduuri dupa aceasta filtrare.
+
+Aceasta alegere este importanta din punct de vedere statistic. Daca analiza
+grafica ar fi aplicata direct asupra randamentelor, atunci legaturile estimate
+ar amesteca dependenta contemporana cu dependenta pe lag-uri. Prin introducerea
+modelului VAR in prima etapa, cele doua componente sunt separate in mod mai clar.
+
+\section{Diagnosticele modelului}
+
+Dupa estimarea modelului, adecvarea specificatiei este verificata prin mai multe
+teste de diagnostic aplicate reziduurilor. In implementarea lucrarii sunt
+evaluate:
+\begin{itemize}
+    \item stabilitatea modelului, printr-o analiza de tip OLS-CUSUM;
+    \item autocorelatia reziduala, prin testul Portmanteau;
+    \item heteroscedasticitatea de tip ARCH;
+    \item normalitatea reziduurilor, printr-un test Jarque--Bera multivariat.
+\end{itemize}
+
+Rolul acestor verificari este de a evalua daca modelul VAR a reusit sa elimine
+in mod satisfacator structura dinamica liniara din date. In special, absenta
+autocorelatiei reziduale este importanta pentru justificarea pasului urmator,
+deoarece matricea de covarianta folosita in graphical lasso este construita pe
+baza acestor reziduuri.
+
+\section{Estimarea prin OLS}
+
+Parametrii modelului VAR(1) sunt estimati prin metoda celor mai mici patrate
+(OLS) aplicata ecuatie cu ecuatie. Definim:
 \[
-X_t = A_1 X_{t-1} + A_2 X_{t-2} + \cdots + A_p X_{t-p} + \varepsilon_t,
+    \mathbf{Y} = \begin{pmatrix} X_{2}^\top \\ \vdots \\ X_{T}^\top \end{pmatrix}
+    \in \mathbb{R}^{(T-1) \times n}, \quad
+    \mathbf{Z} = \begin{pmatrix} 1 & X_{1}^\top \\ \vdots & \vdots \\ 1 & X_{T-1}^\top \end{pmatrix}
+    \in \mathbb{R}^{(T-1) \times (n+1)}.
 \]
 
-unde matricile $A_1, A_2, \ldots, A_p$ contin coeficientii autoregresivi, iar $\varepsilon_t$ reprezinta vectorul reziduurilor. Acest model generalizeaza autoregresia univariata la cazul multivariabil si este potrivit pentru date financiare in care mai multe serii interactioneaza simultan.
+Estimatorul OLS al matricei de coeficienti $B = [\mu \mid A_1]$ este:
+\begin{equation}
+    \hat{B} = (\mathbf{Z}^\top \mathbf{Z})^{-1} \mathbf{Z}^\top \mathbf{Y},
+    \label{eq:ols_var}
+\end{equation}
+iar matricea de covarianta a reziduurilor este estimata prin:
+\begin{equation}
+    \hat{\Sigma} = \frac{1}{T - n - 2} \sum_{t=2}^{T}
+    \hat{\varepsilon}_t \hat{\varepsilon}_t^\top, \quad
+    \hat{\varepsilon}_t = X_t - \hat{\mu} - \hat{A}_1 X_{t-1}.
+    \label{eq:sigma_hat}
+\end{equation}
 
-In implementarea lucrarii, modelul VAR este construit in principal prin scriptul \texttt{01\_var\_glasso\_network.R}, iar verificarile suplimentare sunt realizate in \texttt{02\_var\_diagnostics.R}. Aceasta separare intre estimare si diagnostic este utila deoarece permite o analiza mai clara a fiecarei etape.
+Estimarea este implementata in R prin pachetul \texttt{vars} \cite{pfaff2008},
+functia \texttt{VAR()}, in scriptul \texttt{01\_var\_glasso\_network.R}.
 
-Selectia ordinului $p$ al modelului este o problema importanta. Daca ordinul este prea mic, modelul nu surprinde suficient de bine dependenta dinamica. Daca este prea mare, modelul devine excesiv de complex si poate include fluctuatii nesemnificative. In lucrare, alegerea numarului de laguri este facuta folosind criteriul Schwarz, cunoscut si sub numele de BIC. Acest criteriu penalizeaza modelele prea complicate si favorizeaza o reprezentare parsimonioasa \cite{lutkepohl2005}.
+\section{Verificarea stabilitatii}
 
-Rezultatul obtinut in analiza implementata este selectia unui model cu lag egal cu unu. Din punct de vedere statistic, aceasta alegere sugereaza ca o mare parte a dependentei dinamice relevante este capturata prin relatia dintre randamentele curente si randamentele din ziua anterioara. Pentru date zilnice financiare, aceasta concluzie este plauzibila, deoarece reactiile pietei tind sa fie rapide.
+Conditia de stabilitate a VAR(1) cere ca toate valorile proprii ale matricei
+$A_1$ sa aiba modul strict mai mic decat 1. Echivalent, toate radacinile
+polinomului caracteristic $\det(I_n - A_1 z) = 0$ trebuie sa se afle in
+exteriorul discului unitate.
 
-Dupa estimarea modelului, atentia se muta asupra reziduurilor. Ele reprezinta componenta din date care nu este explicata de relatiile autoregresive. Din perspectiva lucrarii, reziduurile sunt esentiale, deoarece pe baza lor se construieste ulterior matricea de covarianta si apoi matricea de precizie.
+Verificarea stabilitatii este realizata in scriptul \texttt{02\_var\_diagnostics.R}.
+Rezultatele confirma ca modelul este stabil: toate valorile proprii ale lui
+$\hat{A}_1$ au modul sub 1, ceea ce garanteaza ca procesul are o reprezentare
+stationara si ca interpretarile dinamice sunt valide.
 
-Un avantaj major al modelului VAR in acest context este faptul ca el permite separarea dependentei temporale de dependenta contemporana. Daca am analiza direct preturile sau chiar randamentele fara aceasta etapa, am amesteca efectele de memorie ale seriilor cu relatiile structurale dintre active. Prin filtrarea VAR, analiza ulterioara se concentreaza mai mult pe relatiile conditionale dintre socuri.
+\section{Diagnosticele modelului}
 
-Calitatea modelului trebuie verificata prin teste de diagnostic. In scriptul \texttt{02\_var\_diagnostics.R} sunt analizate proprietati precum stabilitatea modelului, autocorelatia reziduurilor, heteroscedasticitatea de tip ARCH si normalitatea. Aceste verificari sunt importante deoarece un model folosit doar formal, fara validare, nu ofera o baza credibila pentru etapele urmatoare.
+Calitatea modelului VAR estimat trebuie validata prin mai multe teste de
+diagnostic, implementate in scriptul \texttt{02\_var\_diagnostics.R}.
 
-Testul de stabilitate urmareste daca radacinile asociate modelului se afla in interiorul cercului unitate. Daca aceasta conditie este indeplinita, modelul poate fi considerat stabil si interpretarile dinamice sunt legitime. Testul Portmanteau verifica absenta autocorelatiei reziduurilor. In mod ideal, dupa estimarea modelului, reziduurile nu ar trebui sa mai pastreze structura seriala semnificativa.
+\subsection{Testul Portmanteau pentru autocorelatia reziduurilor}
 
-Verificarile privind heteroscedasticitatea si normalitatea nu au doar un rol formal. In datele financiare este bine cunoscut faptul ca volatilitatea poate varia in timp si ca distributiile randamentelor pot avea cozi mai groase decat distributia normala. Prin urmare, rezultatele acestor teste trebuie interpretate realist. Scopul nu este obtinerea unui model perfect, ci a unui model suficient de bine specificat pentru a permite analiza structurii de dependenta.
+Testul Portmanteau (Ljung-Box multivariat) verifica ipoteza nula ca reziduurile
+nu sunt autocorelatate pana la lag-ul $h$. Statistica testului este:
+\begin{equation}
+    Q_h = T^2 \sum_{k=1}^{h} \frac{1}{T-k}
+    \operatorname{tr}\!\left(\hat{C}_k^\top \hat{C}_0^{-1} \hat{C}_k \hat{C}_0^{-1}\right),
+    \label{eq:portmanteau}
+\end{equation}
+unde $\hat{C}_k = \frac{1}{T}\sum_{t=k+1}^T \hat{\varepsilon}_t \hat{\varepsilon}_{t-k}^\top$
+este matricea de autocorelatie la lag $k$.
 
-Din punct de vedere metodologic, aceasta etapa este una centrala in lucrare. Profesorul coordonator a insistat asupra prezentarii metodologiei si asupra interpretarii rezultatelor din punct de vedere statistic. Modelul VAR raspunde exact acestei cerinte deoarece ofera cadrul matematic in care sunt eliminate efectele autoregresive si sunt pregatite datele pentru analiza grafica.
+Sub $H_0$, statistica $Q_h$ urmeaza asimptotic o distributie $\chi^2$ cu
+$n^2(h - p)$ grade de libertate \cite{lutkepohl2005}. Rezultatele testului
+indica absenta autocorelatiei semnificative in reziduuri, ceea ce valideaza
+specificatia VAR(1).
 
-In concluzie, modelul VAR constituie filtrul statistic principal al lucrarii. Prin estimarea sa se obtin reziduuri care surprind socurile neexplicate de dinamica temporala. Aceste reziduuri stau la baza tuturor etapelor urmatoare, in special a estimarii matricii de covarianta si a construirii retelei financiare.
+\subsection{Testul ARCH multivariat}
+
+Datele financiare prezinta frecvent efecte de volatilitate grupata (ARCH/GARCH).
+Testul ARCH multivariat verifica daca variantele conditionale ale reziduurilor
+sunt constante in timp. Prezenta efectelor ARCH nu invalideaza estimatii OLS ale
+coeficientilor VAR (care raman nebiasate), dar afecteaza eficienta si trebuie
+luata in considerare la interpretarea rezultatelor \cite{tsay2010}.
+
+\subsection{Testul de normalitate}
+
+Testul Jarque-Bera multivariat verifica normalitatea distributiei reziduurilor
+prin masurarea asimetriei si kurtozei. In datele financiare, este bine cunoscut
+faptul ca distributiile randamentelor au cozi mai groase decat distributia
+normala (kurtoza excesiva pozitiva) \cite{cont2001}. Prin urmare, respingerea
+normalitatii nu este neasteptata si nu invalideaza analiza, cu conditia ca
+numarul de observatii sa fie suficient de mare pentru a invoca teoreme de tip
+limita centrala.
+
+\section{Rolul reziduurilor in analiza ulterioara}
+
+Reziduurile $\hat{\varepsilon}_t$ obtinute din modelul VAR(1) reprezinta
+componentele neanticipate ale evolutiei fiecarui sector la momentul $t$,
+curatate de efectele autoregresive. In termeni economici, ele pot fi interpretate
+ca \textit{socuri} sau informatii noi care afecteaza simultan piata la momentul $t$.
+
+Matricea de covarianta $\hat{\Sigma}$ a acestor reziduuri masoara dependenta
+\textit{contemporana} dintre socuri, adica relatiile dintre sectoare care nu
+pot fi explicate prin evolutia lor istorica proprie. Aceasta matrice este intrarea
+principala pentru etapa urmatoare: estimarea matricei de precizie prin graphical
+lasso.
+
+Un avantaj major al filtrarii VAR este separarea clara a doua tipuri de
+dependenta. Dependenta temporala (cum valorile trecute ale sectorului $j$
+influenteaza evolutia sectorului $i$) este capturata de matricea $A_1$.
+Dependenta contemporana (cum socurile simultane sunt corelate intre sectoare)
+este capturata de $\Sigma$. Aceasta separare este esentiala pentru constructia
+unei retele financiare interpretabile.

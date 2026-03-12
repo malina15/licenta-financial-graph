@@ -1,27 +1,180 @@
 \chapter{Analiza retelei financiare}
 
-Dupa estimarea matricii de precizie, urmatorul pas este construirea retelei financiare asociate. In aceasta reprezentare, fiecare nod corespunde unui sector sau unui ETF sectorial, iar existenta unei muchii intre doua noduri semnifica prezenta unei dependente conditionale intre variabilele corespunzatoare.
+Dupa estimarea matricei de precizie prin graphical lasso, urmatorul pas este
+constructia si analiza retelei financiare asociate. In aceasta reprezentare,
+fiecare nod corespunde unui sector, iar o muchie intre doua noduri semnifica
+prezenta unei dependente conditionale semnificative. Aceasta transformare
+dintr-un obiect matricial intr-un graf permite o analiza structurala bogata,
+imposibila prin simpla inspectie a matricei numerice.
 
-Aceasta transformare dintr un obiect matricial intr un graf are un avantaj important. Ea permite interpretarea vizuala si structurala a relatiilor dintre active. In locul unei matrici numerice greu de urmarit, obtinem o retea in care se pot identifica rapid nodurile centrale, grupurile de sectoare interconectate si eventualele legaturi periferice.
+\section{Constructia retelei}
 
-In implementarea practica a lucrarii, reteaua este construita in principal in scriptul \texttt{01\_var\_glasso\_network.R}. Ulterior, anumite caracteristici ale acesteia sunt analizate prin scriptul \texttt{05\_centrality\_measures.R}. Aceasta organizare arata o separare clara intre etapa de constructie si etapa de interpretare.
+Reteaua financiara este construita in scriptul \texttt{01\_var\_glasso\_network.R}
+utilizand pachetul \texttt{igraph} \cite{csardi2006}. Procedura este urmatoarea:
 
-Unul dintre primele aspecte relevante ale unei retele este densitatea sa. Densitatea masoara proportia muchiilor existente din totalul muchiilor posibile. O densitate mare indica o piata puternic interconectata, in timp ce o densitate mica sugereaza o structura mai fragmentata. In context financiar, densitatea poate oferi informatii despre gradul general de integrare al sectoarelor.
+\begin{enumerate}
+    \item Se extrag indicii $(i,j)$ cu $\hat{\theta}_{ij} \neq 0$ si $i < j$
+    (pentru a evita dublarea muchiilor, deoarece $\hat{\Theta}$ este simetrica).
+    \item Se construieste graful neorientat ponderat $G = (V, E, w)$ cu
+    $w_{ij} = |\hat{\theta}_{ij}|$.
+    \item Rezultatele sunt exportate in fisierele \texttt{edges.csv} si
+    \texttt{top10\_edges.csv} pentru analiza si prezentare.
+\end{enumerate}
 
-Pe langa densitate, un rol central il joaca masurile de centralitate. Acestea permit cuantificarea importantei fiecarui nod in structura retelei. In lucrare sunt relevante in special masurile de tip degree centrality, betweenness si strength.
+\section{Proprietati globale ale grafului}
 
-Degree centrality masoara numarul de conexiuni ale unui nod. In cazul unei retele financiare, un sector cu degree mare este conectat direct cu multe alte sectoare si poate fi interpretat ca avand o pozitie influenta in structura pietei.
+\subsection{Densitatea retelei}
 
-Betweenness masoara de cate ori un nod se afla pe drumurile minime dintre alte perechi de noduri. Un sector cu betweenness mare poate juca rolul de intermediar in transmiterea influentelor intre parti diferite ale retelei. Din perspectiva riscului sistemic, astfel de noduri sunt deosebit de interesante.
+Densitatea masoara fractia de muchii existente din totalul posibil:
+\begin{equation}
+    d(G) = \frac{|E|}{n(n-1)/2},
+    \label{eq:density}
+\end{equation}
+unde $n(n-1)/2 = 55$ este numarul maxim de muchii pentru $n = 11$ noduri.
+Densitatea reflecta compromisul realizat prin selectia parametrului $\rho$:
+un graf cu densitate moderata este preferabil unuia complet sau gol.
 
-Strength este o generalizare ponderata a gradului si ia in considerare intensitatea conexiunilor. Daca muchiile sunt interpretate prin valori asociate elementelor nenule ale matricii de precizie, atunci strength ofera o imagine mai bogata asupra importantei unui nod decat simpla numarare a muchiilor.
+\subsection{Componenta conexa}
 
-Analiza acestor indicatori este importanta deoarece permite ordonarea sectoarelor in functie de rolul lor structural. In loc sa afirmam doar ca reteaua are o anumita forma, putem identifica explicit ce sectoare sunt mai centrale, care sunt mai periferice si care ar putea contribui mai mult la propagarea socurilor.
+Un aspect important al retelei este daca toti nodurile sunt conectati intr-o
+singura componenta sau exista sectoare izolate. Existenta unei singure componente
+conexe indica ca toti sectorii sunt conectati, direct sau indirect, prin lantul
+de dependente conditionale. Aceasta proprietate este relevanta pentru analiza
+propagarii socurilor.
 
-Un alt aspect important este identificarea grupurilor de noduri mai strans conectate. Chiar si atunci cand nu este aplicata formal o metoda de detectie a comunitatilor, simpla observatie a structurii retelei poate sugera existenta unor subgrupuri sectoriale. Aceste subgrupuri pot reflecta proximitati economice sau reactii similare la factori macroeconomici.
+\subsection{Diametrul grafului}
 
-Din punct de vedere statistic, trebuie subliniat ca reteaua construita nu este una bazata pe corelatii brute. Ea este derivata din matricea de precizie, ceea ce inseamna ca surprinde dependenta conditionala. Aceasta diferenta este importanta. O muchie din retea nu spune doar ca doua sectoare se misca impreuna, ci ca intre ele exista o legatura directa care nu poate fi explicata complet prin celelalte sectoare incluse in model.
+Diametrul $\operatorname{diam}(G)$ este lungimea celui mai lung drum minim
+(drum geodezic) din graf:
+\[
+    \operatorname{diam}(G) = \max_{i,j \in V} d(i,j),
+\]
+unde $d(i,j)$ este distanta geodezica (numarul minim de muchii) intre $i$ si $j$.
+Un diametru mic indica o retea in care informatia se propaga rapid intre orice
+doi participanti.
 
-Prin urmare, analiza retelei reprezinta puntea dintre partea matematica a lucrarii si partea de interpretare economica. Structura grafului este obtinuta prin metode statistice riguroase, dar semnificatia acestei structuri poate fi discutata si in termeni de functionare a pietei financiare.
+\section{Masuri de centralitate}
 
-In concluzie, reteaua financiara construita in aceasta lucrare nu este doar o reprezentare grafica atractiva, ci un instrument de sinteza a dependentei conditionale dintre active. Masurile de centralitate si proprietatile structurale ale grafului ofera baza pentru interpretarea rezultatelor din capitolul urmator.
+Masurile de centralitate cuantifica importanta fiecarui nod in structura retelei
+si sunt calculate in scriptul \texttt{05\_centrality\_measures.R}. Rezultatele
+sunt exportate in fisierul \texttt{centrality.csv}.
+
+\subsection{Degree centrality}
+
+Degree-ul unui nod este numarul de muchii incidente:
+\begin{equation}
+    \deg(i) = |\mathcal{N}(i)| = |\{j : \{i,j\} \in E\}|.
+    \label{eq:degree}
+\end{equation}
+
+In contextul retelei financiare, un sector cu degree ridicat este conectat
+direct cu multi alti sectori. Aceasta pozitie ii confera o influenta mai mare
+in sistem si un potential mai mare de a propaga sau absorbi socuri.
+
+\subsection{Strength (gradul ponderat)}
+
+Strength ia in considerare si intensitatea conexiunilor:
+\begin{equation}
+    s_i = \sum_{j \in \mathcal{N}(i)} |\hat{\theta}_{ij}|.
+    \label{eq:strength}
+\end{equation}
+
+Un sector cu strength ridicat nu doar ca are multi vecini, dar dependentele
+conditionale cu acestia sunt si puternice. Strength este o masura mai informativa
+decat degree-ul simplu in contextul retelelor ponderate.
+
+\subsection{Betweenness centrality}
+
+Betweenness centralitati masoara importanta unui nod ca intermediar structural:
+\begin{equation}
+    C_B(i) = \sum_{\substack{s,t \in V \\ s \neq i \neq t}}
+    \frac{\sigma(s,t \mid i)}{\sigma(s,t)},
+    \label{eq:betweenness}
+\end{equation}
+unde $\sigma(s,t)$ este numarul de drumuri geodezice de la $s$ la $t$, iar
+$\sigma(s,t \mid i)$ este numarul celor care trec prin $i$.
+
+Un sector cu betweenness ridicat controleaza fluxul de informatie intre parti
+diferite ale retelei. Eliminarea unui astfel de nod ar fragmenta reteaua si
+ar perturba semnificativ conectivitatea sistemului. Din perspectiva riscului
+sistemic, sectoarele cu betweenness ridicat sunt deosebit de importante.
+
+\subsection{Eigenvector centrality}
+
+Eigenvector centrality tine cont nu doar de numarul conexiunilor unui nod,
+ci si de importanta vecinilor sai. Fie $W \in \mathbb{R}^{n \times n}$ matricea
+de adiacenta ponderata a grafului. Eigenvector centrality satisface:
+\begin{equation}
+    \lambda_{\max} x_i = \sum_{j=1}^n W_{ij} x_j,
+    \label{eq:eigenvector}
+\end{equation}
+unde $\lambda_{\max}$ este valoarea proprie dominanta a lui $W$ (Perron-Frobenius).
+Un sector conectat la sectoare importante capata un scor ridicat, chiar daca
+nu are neaparat multe conexiuni.
+
+\section{Interpretarea structurii grafului}
+
+\subsection{Sectoare centrale vs. periferice}
+
+Combinarea celor patru masuri de centralitate permite clasificarea sectoarelor
+in mai multe categorii:
+
+\begin{itemize}
+    \item \textbf{Noduri centrale (hub-uri)}: sectoare cu degree, strength si
+    eigenvector centrality ridicate. Acestea sunt conectate direct cu mai multi
+    participanti si la noduri importante.
+    \item \textbf{Intermediari structurali}: sectoare cu betweenness ridicat
+    care joaca rolul de punte intre parti diferite ale retelei.
+    \item \textbf{Noduri periferice}: sectoare cu putine conexiuni slabe, care
+    au un rol mai limitat in propagarea informatiei.
+\end{itemize}
+
+\subsection{Diferenta fata de analiza de corelatie}
+
+Este important de subliniat ca reteaua bazata pe matricea de precizie
+difera fundamental de o retea bazata pe corelatii. In analiza de corelatie,
+doua sectoare cu corelatie ridicata ar fi conectate, chiar daca acea corelatie
+este mediata complet de un factor comun. In reteaua noastra, o muchie exista
+numai daca dependenta dintre doua sectoare persista dupa controlul pentru
+toate celelalte sectoare.
+
+Aceasta proprietate poate fi ilustrata printr-un exemplu simplu: sectoarele
+XLK (tehnologie) si XLY (bunuri discretionare) pot parea corelate pentru ca
+ambele sunt sensibile la ciclul economic. Daca aceasta co-miscare este complet
+explicata de un al treilea sector (de exemplu, XLF -- financiar), atunci in
+matricea de precizie $\hat{\theta}_{XLK, XLY}$ va fi zero si nu va exista
+o muchie directa intre ele.
+
+\subsection{Grupuri de sectoare}
+
+Chiar si fara o metoda formala de detectie a comunitatilor, structura vizuala
+a grafului poate sugera existenta unor grupuri de sectoare mai strans conectate.
+In literatura financiara, se asteapta o grupare naturala in:
+\begin{itemize}
+    \item \textit{Sectoare ciclice}: XLK, XLF, XLY, XLI -- sensibile la
+    ciclul economic.
+    \item \textit{Sectoare defensive}: XLU, XLP, XLV -- mai stabile in
+    perioade de recesiune.
+    \item \textit{Sectoare cu caractere mixte}: XLE, XLB, XLRE, XLC.
+\end{itemize}
+
+Daca structura retelei reflecta aceasta clasificare, aceasta constituie o
+validare a metodologiei: reteaua recupereaza cunoasterea economica existenta
+printr-o procedura complet data-driven.
+
+\section{Masurile de centralitate utilizate}
+
+Pentru caracterizarea pozitiei fiecarui sector in retea sunt utilizate mai multe
+masuri de centralitate. In implementarea empirica sunt calculate in special
+degree, strength, betweenness, closeness si eigenvector centrality.
+
+Aceste masuri surprind aspecte diferite ale importantei structurale a unui nod.
+Degree masoara numarul de legaturi directe, strength agrega intensitatea
+ponderilor asociate muchiilor incidente, betweenness evidentiaza rolul de
+intermediar pe drumurile scurte, iar eigenvector centrality surprinde conectarea
+la alte noduri importante.
+
+In interpretarea rezultatelor din aceasta lucrare, un rol central il are mai
+ales masura \textit{strength\_abs}, deoarece ea sintetizeaza intensitatea totala
+a legaturilor directe ale fiecarui sector. Aceasta marime este utilizata atat in
+analiza retelei statice, cat si in analiza pe ferestre temporale.
