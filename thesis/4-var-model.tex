@@ -11,14 +11,15 @@ analiza dependentei contemporane.
 
 Fie $X_t = (r_{1,t}, r_{2,t}, \ldots, r_{n,t})^\top \in \mathbb{R}^n$ vectorul
 randamentelor logaritmice zilnice ale celor $n = 11$ sectoare la momentul $t$.
-Modelul VAR de ordin $p$, definit formal in Capitolul~2, are forma:
+Modelul VAR de ordin $p$, definit formal in Capitolul~2, are forma
+\citep{lutkepohl2005}:
 \begin{equation}
     X_t = \mu + \sum_{k=1}^{p} A_k X_{t-k} + \varepsilon_t,
     \label{eq:var_main}
 \end{equation}
 unde $\mu \in \mathbb{R}^n$ este vectorul constantelor, $A_k \in \mathbb{R}^{n \times n}$
-sunt matricile de coeficienti la lag-ul $k$, iar $\varepsilon_t \sim (0, \Sigma)$
-este vectorul de reziduuri contemporane.
+sunt matricile de coeficienti la lag-ul $k$, iar $\varepsilon_t$ este un vector de reziduuri contemporane cu
+$\mathbb{E}[\varepsilon_t] = 0$ si $\operatorname{Cov}(\varepsilon_t) = \Sigma$.
 
 \section{Selectia ordinului}
 
@@ -35,7 +36,7 @@ In lucrare, selectia ordinului este realizata prin minimizarea criteriului BIC
 
 Alegerea unui VAR(1) este plauzibila pentru date financiare zilnice. Randamentele
 actiunilor au memorie scurta, iar reactiile pietei la informatii noi sunt in
-general rapide \cite{fama1970}. Un lag de o zi este suficient pentru a capta
+general rapide \citep{fama1970,tsay2010}. Un lag de o zi este suficient pentru a capta
 efectele de autocorelare semnificative.
 
 \subsection{Forma VAR(1)}
@@ -56,7 +57,8 @@ Implementarea empirica urmeaza o succesiune clara de pasi. Mai intai, pe baza
 randamentelor zilnice ale celor 11 ETF-uri sectoriale, se selecteaza ordinul
 modelului VAR prin criterii informationale, folosind o valoare maxima
 \texttt{lag.max = 10}. In analiza finala este ales ordinul recomandat de
-criteriul Schwarz, deoarece acesta favorizeaza specificatii mai parsimonioase.
+criteriul Schwarz, deoarece acesta favorizeaza specificatii mai parsimonioase
+\citep{lutkepohl2005}.
 
 Ulterior, modelul VAR este estimat cu termen constant, iar reziduurile obtinute
 sunt extrase pentru etapa urmatoare a analizei. Ideea metodologica esentiala a
@@ -68,9 +70,10 @@ in reziduuri dupa aceasta filtrare.
 Aceasta alegere este importanta din punct de vedere statistic. Daca analiza
 grafica ar fi aplicata direct asupra randamentelor, atunci legaturile estimate
 ar amesteca dependenta contemporana cu dependenta pe lag-uri. Prin introducerea
-modelului VAR in prima etapa, cele doua componente sunt separate in mod mai clar.
+modelului VAR in prima etapa, cele doua componente sunt separate in mod mai clar
+\citep{lutkepohl2005}.
 
-\section{Diagnosticele modelului}
+\section{Strategia de diagnostic}
 
 Dupa estimarea modelului, adecvarea specificatiei este verificata prin mai multe
 teste de diagnostic aplicate reziduurilor. In implementarea lucrarii sunt
@@ -81,6 +84,9 @@ evaluate:
     \item heteroscedasticitatea de tip ARCH;
     \item normalitatea reziduurilor, printr-un test Jarque--Bera multivariat.
 \end{itemize}
+
+Aceste proceduri de diagnostic sunt standard in analiza modelelor VAR
+\citep{lutkepohl2005,tsay2010}.
 
 Rolul acestor verificari este de a evalua daca modelul VAR a reusit sa elimine
 in mod satisfacator structura dinamica liniara din date. In special, absenta
@@ -99,7 +105,8 @@ Parametrii modelului VAR(1) sunt estimati prin metoda celor mai mici patrate
     \in \mathbb{R}^{(T-1) \times (n+1)}.
 \]
 
-Estimatorul OLS al matricei de coeficienti $B = [\mu \mid A_1]$ este:
+Estimatorul OLS al matricei de coeficienti $B = [\mu \mid A_1]$ este
+\citep{lutkepohl2005}:
 \begin{equation}
     \hat{B} = (\mathbf{Z}^\top \mathbf{Z})^{-1} \mathbf{Z}^\top \mathbf{Y},
     \label{eq:ols_var}
@@ -112,13 +119,13 @@ iar matricea de covarianta a reziduurilor este estimata prin:
     \label{eq:sigma_hat}
 \end{equation}
 
-Estimarea este implementata in R prin pachetul \texttt{vars} \cite{pfaff2008},
+Estimarea este implementata in R prin pachetul \texttt{vars} \citep{pfaff2008},
 functia \texttt{VAR()}, in scriptul \texttt{01\_var\_glasso\_network.R}.
 
 \section{Verificarea stabilitatii}
 
 Conditia de stabilitate a VAR(1) cere ca toate valorile proprii ale matricei
-$A_1$ sa aiba modul strict mai mic decat 1. Echivalent, toate radacinile
+$A_1$ sa aiba modul strict mai mic decat 1 \citep{lutkepohl2005}. Echivalent, toate radacinile
 polinomului caracteristic $\det(I_n - A_1 z) = 0$ trebuie sa se afle in
 exteriorul discului unitate.
 
@@ -145,7 +152,7 @@ unde $\hat{C}_k = \frac{1}{T}\sum_{t=k+1}^T \hat{\varepsilon}_t \hat{\varepsilon
 este matricea de autocorelatie la lag $k$.
 
 Sub $H_0$, statistica $Q_h$ urmeaza asimptotic o distributie $\chi^2$ cu
-$n^2(h - p)$ grade de libertate \cite{lutkepohl2005}. Rezultatele testului
+$n^2(h - p)$ grade de libertate \citep{lutkepohl2005}. Rezultatele testului
 indica absenta autocorelatiei semnificative in reziduuri, ceea ce valideaza
 specificatia VAR(1).
 
@@ -155,14 +162,14 @@ Datele financiare prezinta frecvent efecte de volatilitate grupata (ARCH/GARCH).
 Testul ARCH multivariat verifica daca variantele conditionale ale reziduurilor
 sunt constante in timp. Prezenta efectelor ARCH nu invalideaza estimatii OLS ale
 coeficientilor VAR (care raman nebiasate), dar afecteaza eficienta si trebuie
-luata in considerare la interpretarea rezultatelor \cite{tsay2010}.
+luata in considerare la interpretarea rezultatelor \citep{tsay2010}.
 
 \subsection{Testul de normalitate}
 
 Testul Jarque-Bera multivariat verifica normalitatea distributiei reziduurilor
 prin masurarea asimetriei si kurtozei. In datele financiare, este bine cunoscut
 faptul ca distributiile randamentelor au cozi mai groase decat distributia
-normala (kurtoza excesiva pozitiva) \cite{cont2001}. Prin urmare, respingerea
+normala (kurtoza excesiva pozitiva) \citep{cont2001}. Prin urmare, respingerea
 normalitatii nu este neasteptata si nu invalideaza analiza, cu conditia ca
 numarul de observatii sa fie suficient de mare pentru a invoca teoreme de tip
 limita centrala.
@@ -185,4 +192,4 @@ dependenta. Dependenta temporala (cum valorile trecute ale sectorului $j$
 influenteaza evolutia sectorului $i$) este capturata de matricea $A_1$.
 Dependenta contemporana (cum socurile simultane sunt corelate intre sectoare)
 este capturata de $\Sigma$. Aceasta separare este esentiala pentru constructia
-unei retele financiare interpretabile.
+unei retele financiare interpretabile \citep{lutkepohl2005,friedman2008}.
