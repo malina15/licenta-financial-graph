@@ -13,10 +13,29 @@ Din punct de vedere al constructiei statistice, demersul a urmat un lant logic
 coerent. Mai intai, seriile de preturi au fost transformate in randamente
 logaritmice, adecvate pentru modelare stationara. Apoi, modelul VAR(1) a fost
 estimat pentru a extrage reziduurile, interpretate ca inovatii neanticipate.
-Pe baza matricii de covarianta a acestor reziduuri a fost estimata matricea
+Pe baza matricei de covarianta a acestor reziduuri a fost estimata matricea
 de precizie penalizata, iar structura ei rara a fost interpretata drept o
 retea financiara. In etapa finala, aceasta retea a fost analizata prin masuri
 de centralitate si prin extensia dinamica pe ferestre temporale.
+
+Un avantaj important al acestei abordari este faptul ca fiecare etapa are o
+justificare matematica si statistica precisa. Transformarea preturilor in
+randamente raspunde cerintelor de stationaritate si comparabilitate. Modelul
+VAR permite filtrarea dependentei temporale liniare, astfel incat etapa
+urmatoare sa nu amestece efectele pe lag-uri cu relatiile contemporane.
+Graphical lasso introduce un mecanism de regularizare care produce o structura
+rara si interpretabila, evitand dificultatile asociate unei matrici de precizie
+dense. In acest fel, reteaua rezultata nu este doar o reprezentare grafica
+atractiva, ci expresia unei structuri de dependenta conditionala estimate in
+mod riguros.
+
+Din perspectiva implementarii, lucrarea a urmarit si criteriul reproductibilitatii.
+Pipeline-ul a fost organizat in scripturi separate pentru descarcarea datelor,
+preprocesare, estimarea modelului VAR, diagnostice, selectia parametrului de
+regularizare, constructia retelei si analiza pe ferestre temporale. Aceasta
+organizare nu are doar un rol tehnic, ci si unul metodologic: ea face posibila
+verificarea independenta a fiecarui pas si permite extinderea ulterioara a
+analizei fara a modifica logica de baza a proiectului.
 
 \section{Contributii principale}
 
@@ -43,31 +62,93 @@ economic. Accentul nu cade doar pe reprezentarea vizuala a grafului, ci pe
 semnificatia structurala a centralitatii, a raritatii retelei si a persistentei
 anumitor legaturi directe intre sectoare.
 
+O alta contributie importanta este introducerea unei perspective dinamice prin
+analiza pe ferestre temporale. Aceasta extensie permite depasirea unei imagini
+strict statice asupra retelei financiare si sugereaza faptul ca structura
+dependentei conditionale se poate modifica in timp. Chiar daca analiza dinamica
+ramane, in aceasta lucrare, una exploratorie, ea arata ca metodologia propusa
+poate fi folosita nu doar pentru descrierea unei structuri medii pe intregul
+esantion, ci si pentru urmarirea evolutiei acesteia in contexte economice diferite.
+
+Tot in planul contributiilor trebuie mentionat faptul ca lucrarea pune accentul
+pe interpretabilitate. Intr-un context in care modelele statistice pot deveni
+rapid foarte complexe, alegerea unei metode care produce o retea rara si care
+permite discutarea explicita a nodurilor centrale, a muchiilor dominante si a
+gradului de conectare dintre sectoare reprezinta un avantaj important. Din acest
+motiv, rezultatul final nu este doar o estimare numerica, ci o structura care
+poate fi discutata si inteleasa atat din punct de vedere statistic, cat si din
+punct de vedere economic.
+
 \section{Concluzii statistice si matematice}
 
 Rezultatele obtinute sustin ideea ca piata financiara sectoriala nu are o
 structura uniforma. Dupa filtrarea dependentei temporale, reteaua rezultata nu
 este completa, ceea ce arata ca o parte importanta a corelatiilor brute observate
-in date este mediata de alti factori sau de alte sectoare, si nu corespunde unor
+in date este mediata de alti factori sau de alte sectoare si nu corespunde unor
 relatii directe. Din acest punct de vedere, metodologia utilizata este superioara
-unei simple analize de corelatie.
+unei simple analize de corelatie, deoarece ofera acces la structura dependentei
+conditionale si nu doar la intensitatea unor co-miscari perechi.
 
 Masurile de centralitate evidentiaza faptul ca anumite sectoare ocupa pozitii
 mai importante in structura dependentei conditionale. Aceasta neuniformitate
 este relevanta pentru analiza riscului sistemic, deoarece socurile nu se
 propaga intr-un sistem omogen, ci printr-o arhitectura in care unele noduri
-pot avea rol de hub sau de intermediar.
+pot avea rol de hub sau de intermediar. In consecinta, importanta unui sector
+nu depinde doar de marimea sa economica sau de vizibilitatea sa pe piata, ci
+si de pozitia sa in reteaua relatiilor conditionale estimate.
 
 Analiza pe ferestre temporale sugereaza, de asemenea, ca structura retelei nu
 este complet stabila in timp. Chiar daca anumite trasaturi par persistente,
 importanta relativa a sectoarelor si gradul de interconectare pot varia in
 functie de contextul macroeconomic si financiar. Aceasta observatie sustine
 ideea ca retelele financiare trebuie tratate nu doar ca obiecte statice, ci
-si ca structuri evolutive.
+si ca structuri evolutive. In acelasi timp, ea arata ca metodologia propusa
+poate surprinde nu doar configuratia medie a sistemului, ci si modificarile
+care apar in perioade caracterizate prin stres, ajustari monetare sau schimbari
+de regim in piata.
+
+Din punct de vedere matematic, lucrarea confirma utilitatea interpretarii
+zerourilor din matricea de precizie ca absente ale dependentei conditionale
+directe. Aceasta legatura este esentiala, deoarece transforma o problema de
+estimare matriciala intr-una de analiza structurala. Reteaua financiara obtinuta
+nu este un obiect adaugat artificial peste rezultate, ci chiar forma naturala
+de interpretare a estimatorului rar al matricei de precizie. In acest sens,
+grafurile gaussiene ofera cadrul conceptual care face legatura dintre teoria
+probabilitatii, statistica multivariata si analiza de retea.
+
+Din punct de vedere statistic, rezultatele obtinute arata si importanta
+regularizarii. Fara penalizarea de tip $\ell_1$, matricea de precizie estimata
+ar fi mult mai densa si mult mai dificil de interpretat. Prin graphical lasso,
+structura este simplificata fara a pierde complet informatia relevanta, ceea ce
+face posibila identificarea unui numar restrans de relatii directe dominante.
+Aceasta combinatie dintre parsimonie si interpretabilitate este unul dintre
+cele mai importante avantaje ale metodologiei folosite.
 
 In ansamblu, lucrarea arata ca metodele matematice si statistice moderne pot
 oferi o imagine mai riguroasa asupra organizarii interne a pietei financiare
 decat indicatorii descriptivi traditionali. Combinatia dintre modele VAR,
-estimarea rara a matricii de precizie si analiza de retea constituie un cadru
+estimarea rara a matricei de precizie si analiza de retea constituie un cadru
 solid, interpretabil si extensibil pentru studierea interdependentelor dintre
 sectoare.
+
+\section{Concluzie finala}
+
+Concluzia generala a lucrarii este ca dependenta dintre sectoarele pietei
+financiare nu poate fi redusa la o simpla colectie de corelatii perechi.
+Structura relatiilor dintre sectoare este mai subtila: o parte dintre legaturi
+sunt directe, altele sunt indirecte, iar importanta fiecarui sector depinde de
+pozitia sa in ansamblul sistemului. Din acest motiv, o abordare bazata pe
+dependenta conditionala si pe analiza de retea ofera o perspectiva mai bogata
+si mai riguroasa decat metodele descriptive clasice.
+
+Rezultatele obtinute nu trebuie interpretate in sens cauzal si nici ca o
+descriere definitiva a pietei, ci ca o estimare structurata a modului in care
+dependentele dintre sectoare se organizeaza pe esantionul analizat. Cu toate
+acestea, ele sustin ideea ca reteaua financiara este un obiect util atat pentru
+intelegerea statistica a pietei, cat si pentru formularea unor intrebari mai
+fine despre stabilitate, propagarea socurilor si rolul sectoarelor centrale.
+
+Prin urmare, lucrarea isi atinge obiectivul principal: arata ca un cadru bazat
+pe modele VAR, graphical lasso si analiza de retea poate transforma datele
+financiare brute intr-o reprezentare coerenta, interpretabila si relevanta
+matematic a structurii pietei sectoriale.
