@@ -21,7 +21,7 @@ Matricea $\Gamma(h) = \mathbb{E}[(X_t - \mu)(X_{t-h} - \mu)^\top]$ se numeste
 Stationaritatea este o conditie esentiala pentru modelele econometrice clasice.
 Randamentele logaritmice ale activelor financiare satisfac in general aceasta
 proprietate, spre deosebire de nivelurile preturilor, care prezinta tendinte
-de crestere pe termen lung \cite{tsay2010}.
+de crestere pe termen lung \citep{tsay2010}.
 
 \section{Modelul vector autoregresiv}
 
@@ -35,7 +35,7 @@ Un proces $\{X_t\}$ cu valori in $\mathbb{R}^n$ satisface un model
 unde $\mu \in \mathbb{R}^n$ este vectorul mediilor, $A_1, \ldots, A_p \in \mathbb{R}^{n \times n}$
 sunt matricile de coeficienti, iar $\{\varepsilon_t\}$ este un proces de zgomot alb
 cu $\mathbb{E}[\varepsilon_t] = 0$ si $\mathrm{Cov}(\varepsilon_t) = \Sigma$,
-unde $\Sigma$ este pozitiv definita.
+unde $\Sigma$ este pozitiv definita \citep{lutkepohl2005}.
 \end{definition}
 
 Scriem modelul VAR$(p)$ in forma compacta folosind operatorul de intarziere $L$,
@@ -44,17 +44,17 @@ definit prin $L X_t = X_{t-1}$:
     \left(I_n - A_1 L - A_2 L^2 - \cdots - A_p L^p\right) X_t = \mu + \varepsilon_t.
 \]
 Polinomul matriceal $A(L) = I_n - A_1 L - \cdots - A_p L^p$ se numeste
-\textit{polinomul autoregresiv} al modelului.
+\textit{polinomul autoregresiv} al modelului \citep{lutkepohl2005}.
 
 \begin{definition}
 Modelul VAR$(p)$ este \textit{stabil} daca toate radacinile ecuatiei
 $\det(A(z)) = 0$ se afla in exteriorul discului unitate, adica satisfac
-$|z| > 1$.
+$|z| > 1$ \citep{lutkepohl2005}.
 \end{definition}
 
 Stabilitatea garanteaza existenta unei reprezentari stationare a procesului si
 este verificata in practica prin analiza valorilor proprii ale matricei
-companioana asociate modelului \cite{lutkepohl2005}.
+companioana asociate modelului \citep{lutkepohl2005}.
 
 \subsection{Estimarea parametrilor}
 
@@ -66,7 +66,7 @@ regresiva care contine valorile intarziate si constanta. Estimatorul OLS este:
     \hat{B} = (\mathbf{Z}^\top \mathbf{Z})^{-1} \mathbf{Z}^\top \mathbf{X},
     \label{eq:ols}
 \end{equation}
-unde $\hat{B}$ contine estimatii $\hat{\mu}, \hat{A}_1, \ldots, \hat{A}_p$.
+unde $\hat{B}$ contine estimatii $\hat{\mu}, \hat{A}_1, \ldots, \hat{A}_p$ conform estimarii OLS ecuatie cu ecuatie pentru modelele VAR \citep{lutkepohl2005}.
 Matricea de covarianta a reziduurilor este estimata prin:
 \[
     \hat{\Sigma} = \frac{1}{T - np - 1} \sum_{t=p+1}^{T} \hat{\varepsilon}_t \hat{\varepsilon}_t^\top.
@@ -81,8 +81,8 @@ Ordinul $p$ este selectat prin minimizarea unui criteriu informational.
     \label{eq:bic}
 \end{equation}
 unde $\hat{\Sigma}_p$ este matricea de covarianta estimata a reziduurilor pentru
-un model de ordin $p$. BIC penalizeaza mai puternic modelele complexe comparativ
-cu AIC si tinde sa selecteze modele mai parsimonioase \cite{lutkepohl2005}.
+un model de ordin $p$ \citep{lutkepohl2005}. BIC penalizeaza mai puternic modelele complexe comparativ
+cu AIC si tinde sa selecteze modele mai parsimonioase \citep{lutkepohl2005}.
 
 \section{Distributia gaussiana multivariata si independenta conditionala}
 
@@ -95,14 +95,14 @@ sa este:
 \]
 
 \begin{definition}
-\textit{Matricea de precizie} este $\Theta = \Sigma^{-1}$.
+\textit{Matricea de precizie} este $\Theta = \Sigma^{-1}$ \citep{lauritzen1996}.
 \end{definition}
 
 \begin{proposition}
 Fie $X \sim \mathcal{N}_n(\mu, \Sigma)$ si fie $\Theta = \Sigma^{-1}$.
 Atunci $X_i$ si $X_j$ sunt \textit{independente conditional} fata de
 $X_{V \setminus \{i,j\}}$ (celelalte variabile) daca si numai daca
-$\theta_{ij} = 0$.
+$\theta_{ij} = 0$ \citep{lauritzen1996}.
 \end{proposition}
 
 \begin{proof}
@@ -110,7 +110,7 @@ Aceasta proprietate urmeaza din proprietatile distributiei gaussiene conditional
 Distributia conditionala $X_i \mid X_{V \setminus \{i\}}$ este gaussiana cu
 medie care depinde liniar de $X_j$ cu coeficient proportional cu $\theta_{ij}$.
 Prin urmare $\theta_{ij} = 0$ implica absenta lui $X_j$ din regresia lui $X_i$
-pe celelalte variabile, adica independenta conditionala \cite{lauritzen1996}.
+pe celelalte variabile, adica independenta conditionala \citep{lauritzen1996}.
 \end{proof}
 
 Aceasta propozitie este fundamentala pentru interpretarea retelei financiare:
@@ -127,11 +127,11 @@ $V = \{1, \ldots, n\}$ si o multime de muchii $E \subseteq \{\{i,j\} : i \neq j\
 \begin{definition}
 Un \textit{model grafic gaussian} (graf Markov gaussian) asociat grafului
 $G = (V, E)$ este familia distributiilor $\mathcal{N}_n(\mu, \Sigma)$ pentru
-care $\theta_{ij} = 0$ ori de cate ori $\{i,j\} \notin E$.
+care $\theta_{ij} = 0$ ori de cate ori $\{i,j\} \notin E$ \citep{lauritzen1996}.
 \end{definition}
 
 Prin urmare, muchia $\{i,j\} \in E$ exista daca si numai daca $\theta_{ij} \neq 0$,
-adica daca $X_i$ si $X_j$ sunt conditional dependente \cite{lauritzen1996}.
+adica daca $X_i$ si $X_j$ sunt conditional dependente \citep{lauritzen1996}.
 Reteaua financiara construita in aceasta lucrare este tocmai un astfel de model
 grafic gaussian, in care nodurile sunt sectoarele pietei, iar muchiile reprezinta
 dependente conditionale estimate.
@@ -147,7 +147,7 @@ definita prin:
 In contextul estimarii matricei de precizie, penalizarea cu norma $\ell_1$
 incurajeaza solutii \textit{sparse} (cu multe elemente nule). Aceasta proprietate
 este esentiala pentru obtinerea unor grafuri financiare interpretabile, in care
-relatiile lipsite de semnificatie statistica sunt eliminate \cite{friedman2008}.
+relatiile lipsite de semnificatie statistica sunt eliminate \citep{friedman2008}.
 
 \begin{remark}
 In aceasta lucrare, penalizarea de tip $\ell_1$ are un rol dublu. Pe de o parte,
@@ -170,7 +170,7 @@ unde $\mathcal{N}(i) = \{j : \{i,j\} \in E\}$ este multimea vecinilor lui $i$.
 \end{definition}
 
 \begin{definition}
-\textit{Betweenness centrality} a nodului $i$ este:
+\textit{Betweenness centrality} a nodului $i$ este \citep{freeman1977}:
 \[
     C_B(i) = \sum_{\substack{s,t \in V \\ s \neq i \neq t}}
     \frac{\sigma(s,t \mid i)}{\sigma(s,t)},
@@ -181,7 +181,8 @@ $\sigma(s,t \mid i)$ este numarul celor care trec prin $i$.
 
 \begin{definition}
 \textit{Eigenvector centrality} a nodului $i$ este componenta $i$ a
-vectorului propriu dominant $\mathbf{x}$ al matricei de adiacenta ponderata $W$:
+vectorului propriu dominant $\mathbf{x}$ al matricei de adiacenta ponderata $W$
+\citep{bonacich1987}:
 \[
     \lambda x_i = \sum_{j \in \mathcal{N}(i)} w_{ij} x_j, \quad \lambda = \lambda_{\max}(W).
 \]

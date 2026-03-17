@@ -10,7 +10,7 @@ comparatii clare intre sectoare, eliminand zgomotul specific companiilor individ
 \section{Selectia activelor}
 
 Sectoarele analizate corespund clasificarii standard GICS (Global Industry
-Classification Standard) si sunt acoperite de urmatoarele ETF-uri emise de
+Classification Standard) \citep{gics2024} si sunt acoperite de urmatoarele ETF-uri emise de
 State Street Global Advisors (SPDR):
 
 \begin{table}[H]
@@ -50,14 +50,15 @@ deoarece acestea incorporeaza efectele dividendelor si ale altor ajustari corpor
 Dupa descarcare, seriile au fost aliniate pe intersectia zilelor de tranzactionare
 disponibile pentru toate activele, astfel incat esantionul final sa fie sincronizat
 pe toate cele 11 sectoare. Pe baza acestor preturi s-au calculat randamentele
-logaritmice zilnice, exprimate procentual, prin formula
+logaritmice zilnice, exprimate procentual, prin formula \citep{tsay2010}
 \[
 r_t^{(i)} = 100 \log\left(\frac{P_t^{(i)}}{P_{t-1}^{(i)}}\right).
 \]
 
 Aceasta transformare este standard in econometria financiara, deoarece randamentele
 logaritmice sunt mai adecvate pentru modelare decat nivelurile preturilor si sunt
-mai apropiate de ipoteza de stationaritate necesara in analiza VAR.
+mai apropiate de ipoteza de stationaritate necesara in analiza VAR
+\citep{tsay2010}.
 
 \section{Trasabilitatea fisierelor}
 
@@ -74,10 +75,10 @@ Esantionul utilizat acopera perioada cuprinsa intre \textbf{01 ianuarie 2016} si
 tranzactionate este de aproximativ $T = 1900$ observatii per activ, dupa
 eliminarea zilelor fara tranzactionare si a valorilor lipsa.
 
-Dupa cum a fost mentionat in discutia cu profesorul coordonator, acest interval
-nu este unul foarte lung pentru o analiza istorica comprehensiva. Totusi, el
-este suficient pentru aplicarea si ilustrarea metodelor statistice utilizate
-si include evenimente structurale majore care testeaza robustetea modelului:
+Acest interval nu este foarte lung pentru o analiza istorica comprehensiva.
+Totusi, el este suficient pentru aplicarea si ilustrarea metodelor statistice
+utilizate si include evenimente structurale majore care testeaza robustetea
+modelului:
 
 \begin{itemize}
     \item \textbf{2018--2019}: Tensiuni comerciale SUA--China, volatilitate
@@ -87,8 +88,9 @@ si include evenimente structurale majore care testeaza robustetea modelului:
     \item \textbf{2022}: Cresterea rapida a ratelor dobanzii de catre Fed,
     cu impact diferentiat pe sectoare (sectoarele ciclice si cel imobiliar
     au suferit cel mai mult).
-    \item \textbf{2023--2025}: Revenire diferentiata, dominata de sectorul
-    tehnologic prin emergenta inteligentei artificiale.
+    \item \textbf{2023--2025}: Revenire diferentiata, cu o contributie importanta
+    a sectorului tehnologic in contextul expansiunii aplicatiilor bazate pe
+    inteligenta artificiala.
 \end{itemize}
 
 Aceste episoade creaza conditii naturale pentru a testa daca structura retelei
@@ -99,7 +101,7 @@ financiare se modifica in timp, aspect analizat in Capitolul~8.
 \subsection{Descarcarea datelor}
 
 Datele au fost descarcate automat prin scriptul \texttt{00\_download\_data.R},
-utilizand pachetul \texttt{quantmod} \cite{ryan2024} din R. Scriptul preia
+utilizand pachetul \texttt{quantmod} \citep{ryan2024} din R. Scriptul preia
 preturile de inchidere ajustate pentru dividende si split-uri si construieste
 un set de date coerent in format \texttt{xts} (extensible time series).
 
@@ -125,7 +127,7 @@ $\frac{P_{i,t} - P_{i,t-1}}{P_{i,t-1}}$:
     \item \textit{Simetrie}: cresterile si scaderile procentuale sunt tratate
     simetric.
     \item \textit{Stationaritate}: seriile de randamente nu prezinta tendinte
-    de crestere pe termen lung, spre deosebire de preturi \cite{tsay2010}.
+    de crestere pe termen lung, spre deosebire de preturi \citep{tsay2010}.
 \end{enumerate}
 
 \subsection{Structura setului de date}
@@ -139,7 +141,7 @@ unui ETF, iar fiecare linie corespunde unei zile de tranzactionare.
 
 Randamentele zilnice ale ETF-urilor sectoriale prezinta proprietati statistice
 tipice datelor financiare, cunoscute in literatura sub numele de \textit{stilizate}
-\cite{cont2001}:
+\citep{cont2001}:
 
 \begin{itemize}
     \item \textbf{Medie apropiata de zero}: consistent cu ipoteza de mers
