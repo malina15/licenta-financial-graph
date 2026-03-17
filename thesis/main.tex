@@ -3,13 +3,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[romanian]{babel}
-\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{newtxtext,newtxmath}
 \usepackage{microtype}
-\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\sloppy
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{setspace}
-\usepackage{indentfirst}
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{booktabs}
@@ -17,6 +18,11 @@
 \usepackage{caption}
 \usepackage[numbers]{natbib}
 \usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
 
 
 \geometry{margin=2.5cm}
@@ -30,8 +36,20 @@
 
 \titlespacing*{\chapter}{0pt}{-10pt}{18pt}
 
-\captionsetup[figure]{position=bottom,skip=6pt}
-\captionsetup[table]{position=bottom,skip=6pt}
+\captionsetup{
+  justification=raggedright,
+  singlelinecheck=false,
+  font=normalsize,
+  labelfont=bf,
+  textfont=normalfont
+}
+\captionsetup[figure]{position=top,skip=6pt}
+\captionsetup[table]{position=top,skip=6pt}
+
+\addto\captionsromanian{%
+  \renewcommand{\tablename}{Tabelul}%
+  \renewcommand{\figurename}{Figura}%
+}
 
 % Theorem environments
 \newtheorem{theorem}{Teorema}[chapter]
@@ -40,7 +58,17 @@
 \newtheorem{remark}[theorem]{Remarca}
 \newtheorem{corollary}[theorem]{Corolar}
 
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false
+}
+
 \begin{document}
+\normalsize
 
 \pagenumbering{gobble}
 \input{0-title}
@@ -67,5 +95,8 @@
 
 \bibliographystyle{apalike}
 \bibliography{bibliography}
+
+\clearpage
+\input{11-appendix}
 
 \end{document}

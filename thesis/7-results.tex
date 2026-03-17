@@ -34,11 +34,11 @@ reteaua estimata ulterior ar combina efecte de dependenta contemporana cu efecte
 autoregresive, ceea ce ar reduce claritatea interpretarii statistice.
 
 \begin{figure}[H]
+    \caption{Diagnostice de stabilitate de tip OLS-CUSUM pentru ecuatiile modelului VAR(1).}
+    \label{fig:cusum}
     \centering
     \includegraphics[width=\textwidth]{../outputs/var_stability_cusum.png}
-    \caption{Diagnostice de stabilitate de tip OLS-CUSUM pentru ecuatiile modelului VAR(1).}
-    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/02\_var\_diagnostics.R}, fisierul \texttt{outputs/var\_stability\_cusum.png}.}
-    \label{fig:cusum}
+    \caption*{Sursa: figura generata de autoare prin scriptul \texttt{R/02\_var\_diagnostics.R}, fisierul \texttt{outputs/var\_stability\_cusum.png}.}
 \end{figure}
 
 Figura~\ref{fig:cusum} sugereaza ca traiectoriile statisticilor OLS-CUSUM raman
@@ -81,11 +81,11 @@ evidentia compromisul dintre fidelitatea fata de date si parsimonia structurii
 estimate.
 
 \begin{figure}[H]
+    \caption{Evolutia densitatii retelei in functie de parametrul de regularizare $\rho$.}
+    \label{fig:rho-density}
     \centering
     \includegraphics[width=0.88\textwidth]{../outputs/glasso_density_curve.png}
-    \caption{Evolutia densitatii retelei in functie de parametrul de regularizare $\rho$.}
-    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/03\_glasso\_selection.R}, fisierul \texttt{outputs/glasso\_density\_curve.png}.}
-    \label{fig:rho-density}
+    \caption*{Sursa: figura generata de autoare prin scriptul \texttt{R/03\_glasso\_selection.R}, fisierul \texttt{outputs/glasso\_density\_curve.png}.}
 \end{figure}
 
 Figura~\ref{fig:rho-density} arata ca densitatea retelei scade pe masura ce
@@ -141,11 +141,11 @@ sunt mai periferice. Aceasta neuniformitate este primul semn al existentei unor
 sectoare cu rol sistemic diferentiat.
 
 \begin{figure}[H]
+    \caption{Reteaua financiara estimata pe baza reziduurilor VAR si a metodei graphical lasso.}
+    \label{fig:network}
     \centering
     \includegraphics[width=0.95\textwidth]{../outputs/network.png}
-    \caption{Reteaua financiara estimata pe baza reziduurilor VAR si a metodei graphical lasso.}
-    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/01\_var\_glasso\_network.R}, fisierul \texttt{outputs/network.png}.}
-    \label{fig:network}
+    \caption*{Sursa: figura generata de autoare prin scriptul \texttt{R/01\_var\_glasso\_network.R}, fisierul \texttt{outputs/network.png}.}
 \end{figure}
 
 \subsection{Cele mai importante muchii}
