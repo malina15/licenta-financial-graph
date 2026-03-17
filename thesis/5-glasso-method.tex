@@ -22,11 +22,11 @@ empirica $\hat{\Sigma}$. Aceasta abordare are insa limitari serioase:
 
 In contextul acestei lucrari, cu $n = 11$ sectoare si $T \approx 1900$ observatii,
 raportul $n/T \approx 0.006$ este favorabil, dar sparsitatea este totusi
-dorita pentru interpretabilitate. Metoda graphical lasso rezolva ambele probleme.
+dorita pentru interpretabilitate. Metoda graphical lasso rezolva ambele probleme \citep{friedman2008}.
 
 \section{Problema de optimizare penalizata}
 
-Metoda graphical lasso (GLasso), propusa de \cite{friedman2008}, estimeaza
+Metoda graphical lasso (GLasso), propusa de \citep{friedman2008}, estimeaza
 matricea de precizie prin maximizarea log-verosimilitatii penalizate:
 
 \begin{equation}
@@ -50,7 +50,8 @@ Termenul $\log\det(\Theta) - \operatorname{tr}(\hat{S}\,\Theta)$ reprezinta
 log-verosimilitatea gaussiana (pana la o constanta) in functie de $\Theta$.
 Maximizarea sa fara penalizare ar produce $\hat{\Theta} = \hat{S}^{-1}$,
 adica inversa empirica. Termenul de penalizare $-\rho\|\Theta\|_1$ forteaza
-elementele extra-diagonale mici spre zero, producand o matrice rara.
+elementele extra-diagonale mici spre zero, producand o matrice rara
+\citep{friedman2008}.
 
 \subsection{Convexitate si existenta solutiei}
 
@@ -62,20 +63,20 @@ si admite o solutie unica $\hat{\Theta}$.
 \begin{proof}
 Functia obiectiv este suma a doua componente: $\log\det(\Theta)$, strict concava
 pe conul pozitiv definit, si $-\operatorname{tr}(\hat{S}\,\Theta) - \rho\|\Theta\|_1$,
-concava (liniara plus concava). Prin urmare, suma este strict concava, iar
-maximul pe multimea inchisa $\{\Theta : \Theta \succ 0\}$ este unic.
+concava. Prin urmare, functia obiectiv este strict concava pe domeniul
+$\Theta \succ 0$, ceea ce implica unicitatea solutiei optime.
 \end{proof}
 
 \subsection{Algoritm de rezolvare}
 
 Problema \eqref{eq:glasso} este rezolvata prin algoritmul de coordonate-ciclice
-propus de \cite{friedman2008}. Ideea este de a optimiza alternant in fiecare
+propus de \citep{friedman2008}. Ideea este de a optimiza alternant in fiecare
 coloana/linie a lui $\Theta$, mentinand celelalte fixe. Fiecare subproblema
 se reduce la un lasso standard, rezolvabila eficient. Convergenta algoritmului
 la solutia globala este garantata de convexitatea problemei.
 
 In R, metoda este implementata prin functia \texttt{glasso()} din pachetul
-\texttt{glasso} \cite{friedman2019}, apelata in scriptul
+\texttt{glasso} \citep{friedman2019}, apelata in scriptul
 \texttt{01\_var\_glasso\_network.R}.
 
 \section{Selectia parametrului de regularizare}
@@ -92,7 +93,7 @@ Alegerea valorii optime $\hat{\rho}$ este realizata in scriptul
 
 \subsection{Criteriul BIC pentru graphical models}
 
-Criteriul BIC adaptat pentru modele grafice gaussiene \cite{yuan2007} este:
+Criteriul BIC adaptat pentru modele grafice gaussiene \citep{yuan2007} este:
 \begin{equation}
     \mathrm{BIC}(\rho) = -T\Bigl[\log\det(\hat{\Theta}_\rho)
     - \operatorname{tr}(\hat{S}\,\hat{\Theta}_\rho)\Bigr]
@@ -120,13 +121,13 @@ de rara poate pierde relatii relevante.
 
 \section{Proprietati statistice ale estimatorului GLasso}
 
-\begin{proposition}[Consistenta, \cite{ravikumar2011}]
+\begin{proposition}[Consistenta, \citep{ravikumar2011}]
 Sub conditii de regularitate asupra structurii reale a lui $\Theta^*$ si cu
 $\rho \sim \sqrt{\ln n / T}$, estimatorul GLasso satisface:
 \[
     \|\hat{\Theta}_\rho - \Theta^*\|_F = O_P\!\left(\sqrt{\frac{n \ln n}{T}}\right),
 \]
-si recupereaza structura corecta a grafului cu probabilitate tending la 1.
+si recupereaza structura corecta a grafului cu probabilitate care tinde la 1.
 \end{proposition}
 
 Aceasta proprietate garanteaza ca, pentru un numar suficient de mare de
@@ -146,26 +147,9 @@ Odata estimata $\hat{\Theta}$, reteaua financiara este definita astfel:
 Prin constructie, aceasta retea nu reflecta corelatii brute, ci dependente
 conditionale: o muchie intre sectoarele $i$ si $j$ indica o legatura directa
 care persista dupa controlul pentru toate celelalte sectoare. Aceasta proprietate
-este cea care face reteaua informativa din punct de vedere economic.
+este cea care face reteaua informativa din punct de vedere economic
+\citep{lauritzen1996,friedman2008}.
 
-\section{Selectia parametrului de regularizare}
-
-Un element central al metodei graphical lasso este alegerea parametrului de
-regularizare $\rho$. Acesta controleaza compromisul dintre fidelitatea fata de
-date si raritatea structurii estimate. Pentru valori mici ale lui $\rho$,
-matricea de precizie estimata tinde sa fie mai densa, iar reteaua rezultata
-devine mai greu de interpretat. Pentru valori mari ale lui $\rho$, multe muchii
-sunt eliminate, iar reteaua devine mai rara.
-
-In implementarea lucrarii, sensibilitatea fata de acest parametru este analizata
-pe o grila de valori, iar pentru fiecare valoare sunt evaluate densitatea
-retelei si un criteriu de tip BIC. Aceasta analiza are rolul de a arata cum se
-modifica structura estimata atunci cand regularizarea devine mai puternica.
-
-Din punct de vedere statistic, alegerea lui $\rho$ nu este doar o decizie
-numerica, ci una interpretativa. O retea prea densa poate masca relatiile
-esentiale printr-un exces de muchii slabe, in timp ce o retea prea rara poate
-omite legaturi conditionale reale.
 
 \section{Legatura cu implementarea empirica}
 
