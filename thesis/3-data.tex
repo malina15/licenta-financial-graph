@@ -14,10 +14,10 @@ Classification Standard) si sunt acoperite de urmatoarele ETF-uri emise de
 State Street Global Advisors (SPDR):
 
 \begin{table}[H]
-\centering
 \caption{ETF-urile sectoriale utilizate in analiza}
 \label{tab:etfs}
-\begin{tabularx}{\textwidth}{>{\bfseries}l l X}
+\centering
+\begin{tabularx}{\textwidth}{@{} l l >{\raggedright\arraybackslash}X @{}}
 \toprule
 Ticker & Sector & Descriere \\
 \midrule
@@ -34,7 +34,9 @@ XLRE & Real Estate            & Companii imobiliare si REIT-uri. \\
 XLC  & Communication Services & Telecomunicatii, media, servicii interactive si platforme de comunicare. \\
 \bottomrule
 \end{tabularx}
+\caption*{\footnotesize Sursa: tabel realizat pe baza selectiei ETF-urilor sectoriale utilizate in analiza.}
 \end{table}
+
 
 Aceste unsprezece sectoare acopera intreaga piata de capital americana si
 permit o analiza comprehensiva a structurii de dependenta.
@@ -67,7 +69,7 @@ independenta a fiecarei faze a procesarii.
 
 \section{Perioada si frecventa de observatie}
 
-Esantionul utilizat acopera perioada cuprinsa intre \textbf{01 ianuarie 6} si
+Esantionul utilizat acopera perioada cuprinsa intre \textbf{01 ianuarie 2016} si
 \textbf{21 ianuarie 2026}, la frecventa zilnica. Numarul total de zile
 tranzactionate este de aproximativ $T = 1900$ observatii per activ, dupa
 eliminarea zilelor fara tranzactionare si a valorilor lipsa.

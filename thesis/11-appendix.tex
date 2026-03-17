@@ -1,0 +1,151 @@
+\clearpage
+\chapter*{Anexe}
+\addcontentsline{toc}{chapter}{Anexe}
+
+\section{Bibliografia figurilor si tabelelor}
+
+\textbf{Figuri}
+
+Figura \ref{fig:cusum} a fost generata prin scriptul \texttt{R/02\_var\_diagnostics.R} si exportata ca \texttt{outputs/var\_stability\_cusum.png}.
+
+Figura \ref{fig:rho-density} a fost generata prin scriptul \texttt{R/03\_glasso\_selection.R} si exportata ca \texttt{outputs/glasso\_density\_curve.png}.
+
+Figura \ref{fig:network} a fost generata prin scriptul \texttt{R/01\_var\_glasso\_network.R} si exportata ca \texttt{outputs/network.png}.
+
+Figura \ref{fig:granger-network} a fost generata prin scriptul \texttt{R/04\_granger\_network.R} si exportata ca \texttt{outputs/granger\_network.png}.
+
+\bigskip
+
+\textbf{Tabele}
+
+Tabelul \ref{tab:etfs} a fost realizat pe baza selectiei ETF-urilor sectoriale utilizate in analiza, definite in scripturile \texttt{R/00\_download\_data.R} si \texttt{R/99\_etf\_labels.R}.
+
+\section{Fragmente relevante de cod}
+
+\subsection{Descarcarea datelor si calculul randamentelor logaritmice}
+
+\begin{verbatim}
+tickers <- c("XLB","XLE","XLF","XLI","XLK","XLP","XLU","XLV","XLY","XLRE","XLC")
+
+start_date <- as.Date("2016-01-01")
+end_date   <- Sys.Date()
+
+get_one <- function(sym) {
+  x <- suppressWarnings(getSymbols(sym, src = "yahoo",
+                                  from = start_date, to = end_date,
+                                  auto.assign = FALSE))
+  Ad(x)
+}
+
+prices_list <- lapply(tickers, get_one)
+names(prices_list) <- tickers
+
+prices <- do.call(merge, c(prices_list, all = FALSE))
+colnames(prices) <- tickers
+
+returns <- 100 * diff(log(prices))
+returns <- na.omit(returns)
+
+dir.create("data", showWarnings = FALSE)
+saveRDS(prices,  "data/prices_sectors.rds")
+saveRDS(returns, "data/returns_sectors.rds")
+\end{verbatim}
+
+\subsection{Estimarea modelului VAR si extragerea reziduurilor}
+
+\begin{verbatim}
+returns <- readRDS("data/returns_sectors.rds")
+Y <- as.matrix(returns)
+
+maxlags <- 10
+sel <- VARselect(Y, lag.max = maxlags, type = "const")
+p <- sel$selection[["SC(n)"]]
+
+var_fit <- VAR(Y, p = p, type = "const")
+
+saveRDS(returns, "outputs/returns.rds")
+saveRDS(var_fit, "outputs/var_fit.rds")
+
+resid_mat <- residuals(var_fit)
+S <- cov(resid_mat)
+
+saveRDS(resid_mat, "outputs/var_residuals.rds")
+\end{verbatim}
+
+\subsection{Estimarea matricei de precizie prin graphical lasso}
+
+\begin{verbatim}
+rho <- 1.00
+gl <- glasso(S, rho = rho)
+Theta <- gl$wi
+
+pcor <- -Theta / sqrt(outer(diag(Theta), diag(Theta)))
+diag(pcor) <- 0
+\end{verbatim}
+
+\subsection{Constructia retelei financiare bazate pe corelatii partiale}
+
+\begin{verbatim}
+adj <- (abs(Theta) > 1e-8) * 1
+diag(adj) <- 0
+
+W <- pcor
+W[adj == 0] <- 0
+
+g <- graph_from_adjacency_matrix(W, mode = "max",
+                                 weighted = TRUE, diag = FALSE)
+
+edges_df <- as_data_frame(g, what = "edges")
+write.csv(edges_df, "outputs/edges.csv", row.names = FALSE)
+
+png("outputs/network.png", width = 2600, height = 1600, res = 220)
+plot(g)
+dev.off()
+\end{verbatim}
+
+\subsection{Calculul masurilor de centralitate}
+
+\begin{verbatim}
+edges_pc <- read.csv("outputs/edges.csv", stringsAsFactors = FALSE)
+
+g_pc <- graph_from_data_frame(edges_pc, directed = FALSE)
+E(g_pc)$weight <- edges_pc$weight
+
+deg_pc <- degree(g_pc)
+str_pc <- strength(g_pc, weights = abs(E(g_pc)$weight))
+
+w_pc <- abs(E(g_pc)$weight)
+dist_pc <- 1 / (w_pc + 1e-8)
+
+bet_pc <- betweenness(g_pc, directed = FALSE, weights = dist_pc)
+clo_pc <- closeness(g_pc, normalized = TRUE, weights = dist_pc)
+
+eig_pc <- eigen_centrality(g_pc, directed = FALSE,
+                           weights = abs(E(g_pc)$weight))$vector
+\end{verbatim}
+
+\subsection{Analiza pe ferestre temporale}
+
+\begin{verbatim}
+window_size <- 252
+step_size   <- 21
+
+returns <- readRDS("outputs/returns.rds")
+
+for (start_idx in seq(1, nrow(returns) - window_size, by = step_size)) {
+
+  end_idx <- start_idx + window_size - 1
+  Y <- coredata(returns[start_idx:end_idx, ])
+
+  var_fit <- VAR(Y, p = 1, type = "const")
+  resid_mat <- residuals(var_fit)
+  S <- cov(resid_mat)
+
+  rho <- 1.00
+  gl <- glasso(S, rho = rho)
+  Theta <- gl$wi
+
+  pcor <- -Theta / sqrt(outer(diag(Theta), diag(Theta)))
+  diag(pcor) <- 0
+}
+\end{verbatim}

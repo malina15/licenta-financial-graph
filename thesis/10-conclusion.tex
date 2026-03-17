@@ -1,84 +1,73 @@
 \chapter{Concluzii}
 
-Aceasta lucrare a propus si aplicat un cadru metodologic pentru analiza
-structurii de dependenta conditionala dintre sectoarele pietei financiare
-americane. Abordarea combina modelarea econometrica prin modele vector
-autoregresive cu estimarea grafica prin graphical lasso si analiza de retea
-prin masuri de centralitate.
-
 \section{Sinteza metodologica}
 
-Structura metodologica a lucrarii poate fi rezumata in patru etape:
+Lucrarea a avut ca obiectiv analiza structurii relatiilor dintre sectoarele
+pietei financiare prin combinarea a doua componente metodologice complementare:
+modelarea dependentei temporale printr-un model VAR si estimarea dependentei
+contemporane conditionale prin metoda graphical lasso. Aceasta separare este
+importanta deoarece permite distingerea intre efectele dinamice ale valorilor
+trecute si structura relatiilor directe dintre socurile contemporane.
 
-\begin{enumerate}
-    \item \textbf{Preprocesarea datelor}: randamentele logaritmice zilnice ale
-    celor 11 ETF-uri sectoriale au fost calculate pe esantionul analizat si
-    organizate intr-o matrice de date multivariata.
-
-    \item \textbf{Filtrarea VAR}: un model VAR(1), selectat prin criteriul BIC
-    si validat prin teste de diagnostic, a eliminat dependenta temporala dintre
-    randamente. Reziduurile astfel obtinute reprezinta socurile contemporane
-    neanticipate ale fiecarui sector.
-
-    \item \textbf{Estimarea retelei}: matricea de precizie a reziduurilor a
-    fost estimata prin graphical lasso, utilizand un nivel de regularizare
-    justificat prin analiza pe grila a parametrului $\rho$. Elementele nenule
-    ale matricei de precizie definesc muchiile retelei financiare.
-
-    \item \textbf{Analiza structurala}: masurile de centralitate (degree,
-    strength, betweenness, eigenvector centrality) au permis cuantificarea
-    importantei fiecarui sector in structura retelei. Analiza pe ferestre
-    temporale a investigat stabilitatea in timp a acestei structuri.
-\end{enumerate}
+Din punct de vedere al constructiei statistice, demersul a urmat un lant logic
+coerent. Mai intai, seriile de preturi au fost transformate in randamente
+logaritmice, adecvate pentru modelare stationara. Apoi, modelul VAR(1) a fost
+estimat pentru a extrage reziduurile, interpretate ca inovatii neanticipate.
+Pe baza matricii de covarianta a acestor reziduuri a fost estimata matricea
+de precizie penalizata, iar structura ei rara a fost interpretata drept o
+retea financiara. In etapa finala, aceasta retea a fost analizata prin masuri
+de centralitate si prin extensia dinamica pe ferestre temporale.
 
 \section{Contributii principale}
 
-Principalele contributii ale lucrarii pot fi sintetizate dupa cum urmeaza:
+Principala contributie a lucrarii consta in formularea si implementarea unei
+proceduri reproductibile de trecere de la date financiare brute la o reprezentare
+grafica interpretabila a dependentei conditionale dintre sectoare. In mod
+concret, contributiile pot fi sintetizate astfel.
 
-\begin{enumerate}
-    \item A fost prezentat si argumentat riguros cadrul matematic al metodologiei,
-    incluzand teoria modelelor VAR, proprietatile matricei de precizie in
-    contextul grafurilor gaussiene si proprietatile de consistenta ale
-    estimatorului GLasso.
+In primul rand, lucrarea construieste un cadru unitar care leaga teoria
+seriilor temporale multivariate de teoria grafurilor gaussiene. Astfel, analiza
+retelei nu este folosita doar ca instrument descriptiv, ci are o baza
+matematica precisa: absenta unei muchii corespunde anularii unui element
+extra-diagonal din matricea de precizie si, implicit, absentei dependentei
+conditionale directe.
 
-    \item A fost demonstrat empiric ca structura pietei financiare americane
-    nu este uniforma: anumite sectoare ocupa pozitii centrale cu grad de
-    influenta mai ridicat, in timp ce altele sunt mai periferice.
+In al doilea rand, lucrarea propune o implementare empirica clara, structurata
+in scripturi separate pentru descarcarea datelor, estimarea modelului VAR,
+diagnostice, selectia parametrului de regularizare, constructia retelei si
+analiza dinamica. Aceasta organizare creste reproductibilitatea si face posibila
+verificarea fiecarui pas in mod independent.
 
-    \item A fost ilustrat avantajul analizei bazate pe dependente conditionale
-    fata de simpla analiza de corelatie: nu toate asocierile observate intre
-    sectoare reflecta legaturi directe -- multe sunt mediate de factori comuni.
-
-    \item Analiza dinamica pe ferestre temporale a aratat ca structura retelei
-    nu trebuie privita ca perfect stabila in timp, ci ca susceptibila la
-    modificari intre subperioade diferite ale esantionului analizat.
-\end{enumerate}
+In al treilea rand, rezultatele sunt interpretate atat statistic, cat si
+economic. Accentul nu cade doar pe reprezentarea vizuala a grafului, ci pe
+semnificatia structurala a centralitatii, a raritatii retelei si a persistentei
+anumitor legaturi directe intre sectoare.
 
 \section{Concluzii statistice si matematice}
 
-Din punct de vedere statistic, lucrarea ilustreaza utilitatea metodelor de
-regularizare $\ell_1$ in contexte de inalta dimensionalitate. Proprietatea de
-sparsitate indusa de penalizarea graphical lasso produce un estimator al
-matricei de precizie care este simultan stabil numeric, consistent statistic
-si interpretabil structural.
+Rezultatele obtinute sustin ideea ca piata financiara sectoriala nu are o
+structura uniforma. Dupa filtrarea dependentei temporale, reteaua rezultata nu
+este completa, ceea ce arata ca o parte importanta a corelatiilor brute observate
+in date este mediata de alti factori sau de alte sectoare, si nu corespunde unor
+relatii directe. Din acest punct de vedere, metodologia utilizata este superioara
+unei simple analize de corelatie.
 
-Din punct de vedere matematic, legatura dintre zerouri ale matricei de precizie
-si independenta conditionala in distributia gaussiana multivariata ofera un
-fundament teoretic riguros pentru interpretarea retelei financiare. Reteaua nu
-este o constructie ad-hoc, ci un obiect cu proprietati matematice precise,
-derivate din teoria grafurilor Markov gaussiene.
+Masurile de centralitate evidentiaza faptul ca anumite sectoare ocupa pozitii
+mai importante in structura dependentei conditionale. Aceasta neuniformitate
+este relevanta pentru analiza riscului sistemic, deoarece socurile nu se
+propaga intr-un sistem omogen, ci printr-o arhitectura in care unele noduri
+pot avea rol de hub sau de intermediar.
 
-\section{Perspective}
+Analiza pe ferestre temporale sugereaza, de asemenea, ca structura retelei nu
+este complet stabila in timp. Chiar daca anumite trasaturi par persistente,
+importanta relativa a sectoarelor si gradul de interconectare pot varia in
+functie de contextul macroeconomic si financiar. Aceasta observatie sustine
+ideea ca retelele financiare trebuie tratate nu doar ca obiecte statice, ci
+si ca structuri evolutive.
 
-Lucrarea poate fi extinsa in mai multe directii. Pe de o parte, esantionul ar
-putea fi extins pentru a acoperi perioade mai lungi si mai multe cicluri economice.
-Pe de alta parte, metodologia poate fi rafinata prin utilizarea unor modele
-cu parametri variabili in timp sau prin incorporarea efectelor de volatilitate
-conditionata. Compararea retelei de dependente conditionale cu reteaua de
-cauzalitate Granger (construita in scriptul \texttt{04\_granger\_network.R})
-reprezinta o alta directie valoroasa de investigare.
-
-In ansamblu, lucrarea demonstreaza ca metodele matematice si statistice moderne
-pot furniza o perspectiva structurata si riguroasa asupra organizarii interne
-a pietei financiare, complementand si depasind informatia disponibila prin
-masuri descriptive traditionale.
+In ansamblu, lucrarea arata ca metodele matematice si statistice moderne pot
+oferi o imagine mai riguroasa asupra organizarii interne a pietei financiare
+decat indicatorii descriptivi traditionali. Combinatia dintre modele VAR,
+estimarea rara a matricii de precizie si analiza de retea constituie un cadru
+solid, interpretabil si extensibil pentru studierea interdependentelor dintre
+sectoare.
