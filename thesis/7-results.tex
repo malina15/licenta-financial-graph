@@ -1,10 +1,8 @@
 \chapter{Rezultate}
 
 Acest capitol prezinta si interpreteaza rezultatele obtinute in urma aplicarii
-pipeline-ului metodologic descris in capitolele anterioare. Accentul este pus
-in primul rand pe semnificatia statistica a structurii estimate, in acord cu
-observatia profesorului coordonator ca lucrarea trebuie sa trateze rezultatele
-in primul rand din punct de vedere al metodelor matematice si statistice.
+pipeline-ului metodologic descris in capitolele anterioare. Accentul este pus in primul rand pe semnificatia statistica a structurii estimate,
+din punct de vedere al metodelor matematice si statistice utilizate.
 
 \section{Rezultatele modelului VAR(1)}
 
@@ -15,7 +13,7 @@ alegere este compatibila cu proprietatile frecvent observate ale randamentelor
 zilnice financiare, unde dependenta liniara pe termen scurt este in general
 relativ redusa. Din aceasta perspectiva, un lag de o zi poate fi suficient
 pentru a surprinde componenta dinamica liniara relevanta, mentinand in acelasi
-timp modelul parsimonios \cite{fama1970}.
+timp modelul parsimonios \citep{fama1970,tsay2010,lutkepohl2005}.
 
 \subsection{Stabilitate si diagnostice}
 
@@ -61,8 +59,8 @@ empirice.
 
 \section{Rezultatele Graphical Lasso}
 
-Aplicarea metodei graphical lasso asupra matricii de covarianta a reziduurilor
-produce o matrice de precizie rara, ceea ce permite trecerea de la o descriere
+Aplicarea metodei graphical lasso asupra matricei de covarianta a reziduurilor
+produce o matrice de precizie rara \citep{friedman2008}, ceea ce permite trecerea de la o descriere
 matriciala la una grafica. Din punct de vedere statistic, acesta este unul
 dintre rezultatele centrale ale lucrarii: multe legaturi aparente dintre sectoare
 dispar atunci cand se conditioneaza pe intregul sistem.
@@ -108,7 +106,7 @@ centrale ale metodei graphical lasso.
 
 Din punct de vedere statistic, zerourile din $\hat{\Theta}$ sunt importante
 deoarece indica absenta dependentei conditionale directe intre anumite perechi
-de sectoare, dupa controlul pentru toate celelalte variabile din sistem.
+de sectoare, dupa controlul pentru toate celelalte variabile din sistem \citep{lauritzen1996,friedman2008}.
 Aceasta este diferenta esentiala fata de o analiza bazata doar pe corelatii
 perechi.
 
@@ -132,7 +130,7 @@ dupa semnul lor:
 
 Reteaua financiara rezultata are $n = 11$ noduri si $|\hat{E}|$ muchii.
 Vizualizarea grafica din Figura~\ref{fig:network} a fost produsa cu pachetul
-\texttt{igraph}, folosind un layout circular stabil, adecvat pentru etichete
+\texttt{igraph} \citep{csardi2006}, folosind un layout circular stabil, adecvat pentru etichete
 lungi si pentru comparatia vizuala dintre sectoare.
 
 Observatia vizuala principala este neuniformitatea structurii: anumite noduri
@@ -166,14 +164,15 @@ relatii directe domina structura estimata.
 \subsection{Degree centrality}
 
 
-Tabelul de centralitate evidentiaza sectoarele cu cel mai ridicat degree.
+Valorile calculate ale masurilor de centralitate evidentiaza sectoarele cu cel
+mai ridicat degree.
 In general, sectoarele ciclice (XLK, XLF, XLI) tind sa aiba degree mai ridicat,
 fiind conectate direct cu mai multi participanti ai pietei.
 
 Sectoarele defensive (XLU, XLP) au in general degree mai scazut, reflectand
 o pozitie mai periferica in structura retelei. Aceasta separare este consistenta
 cu literatura financiara care distinge intre sectoare ciclice si defensive
-\cite{tsay2010}.
+\citep{tsay2010}.
 
 
 \subsection{Strength (grad ponderat)}
@@ -210,7 +209,7 @@ Din punct de vedere statistic, rezultatele sustin trei concluzii principale:
     intre randamente sunt mediate de al treilea sector si dispar cand se
     conditioneaza pe intregul sistem.
 
-    \item \textbf{Structura este neuniforma}: distributia centralitati intre
+    \item \textbf{Structura este neuniforma}: distributia centralitatii intre
     sectoare este asimetrica, cu cateva sectoare dominante si mai multe
     periferice. Aceasta heterogenitate are implicatii directe pentru analiza
     riscului sistemic.
