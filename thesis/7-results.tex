@@ -33,6 +33,18 @@ matricei de precizie. In absenta unei filtrari adecvate a dinamicii temporale,
 reteaua estimata ulterior ar combina efecte de dependenta contemporana cu efecte
 autoregresive, ceea ce ar reduce claritatea interpretarii statistice.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/var_stability_cusum.png}
+    \caption{Diagnostice de stabilitate de tip OLS-CUSUM pentru ecuatiile modelului VAR(1).}
+    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/02\_var\_diagnostics.R}, fisierul \texttt{outputs/var\_stability\_cusum.png}.}
+    \label{fig:cusum}
+\end{figure}
+
+Figura~\ref{fig:cusum} sugereaza ca traiectoriile statisticilor OLS-CUSUM raman
+in interiorul limitelor critice pentru toate ecuatiile, ceea ce este compatibil
+cu ipoteza de stabilitate a specificatiei estimate pe intervalul analizat.
+
 \subsection{Matricea de covarianta a reziduurilor}
 
 Matricea $\hat{\Sigma} \in \mathbb{R}^{11 \times 11}$ a reziduurilor VAR(1)
@@ -67,6 +79,18 @@ $\rho$ a fost analizata pe o grila de valori, utilizand un criteriu de tip BIC
 si monitorizand densitatea retelei estimate. Aceasta analiza a avut rolul de a
 evidentia compromisul dintre fidelitatea fata de date si parsimonia structurii
 estimate.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{../outputs/glasso_density_curve.png}
+    \caption{Evolutia densitatii retelei in functie de parametrul de regularizare $\rho$.}
+    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/03\_glasso\_selection.R}, fisierul \texttt{outputs/glasso\_density\_curve.png}.}
+    \label{fig:rho-density}
+\end{figure}
+
+Figura~\ref{fig:rho-density} arata ca densitatea retelei scade pe masura ce
+penalizarea creste, ceea ce este in acord cu rolul lui $\rho$ de a forta
+sparsitatea matricei de precizie estimate.
 
 In analiza empirica principala este utilizata o valoare fixa a penalizarii,
 aleasa astfel incat reteaua rezultata sa ramana suficient de rara pentru a fi
@@ -107,14 +131,22 @@ dupa semnul lor:
 \subsection{Vizualizarea grafului}
 
 Reteaua financiara rezultata are $n = 11$ noduri si $|\hat{E}|$ muchii.
-Vizualizarea grafica (fisierul \texttt{network.png}) a fost produsa cu pachetul
-\texttt{igraph}, folosind un layout de tip Fruchterman-Reingold care plaseaza
-nodurile strans legate mai aproape unele de altele.
+Vizualizarea grafica din Figura~\ref{fig:network} a fost produsa cu pachetul
+\texttt{igraph}, folosind un layout circular stabil, adecvat pentru etichete
+lungi si pentru comparatia vizuala dintre sectoare.
 
 Observatia vizuala principala este neuniformitatea structurii: anumite noduri
 au mai multe conexiuni si sunt plasate in centrul grafului, in timp ce altele
 sunt mai periferice. Aceasta neuniformitate este primul semn al existentei unor
 sectoare cu rol sistemic diferentiat.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../outputs/network.png}
+    \caption{Reteaua financiara estimata pe baza reziduurilor VAR si a metodei graphical lasso.}
+    \caption*{\footnotesize Sursa: figura generata de autoare prin scriptul \texttt{R/01\_var\_glasso\_network.R}, fisierul \texttt{outputs/network.png}.}
+    \label{fig:network}
+\end{figure}
 
 \subsection{Cele mai importante muchii}
 
@@ -131,19 +163,28 @@ relatii directe domina structura estimata.
 
 \section{Masuri de centralitate: rezultate}
 
-\subsection{Degree si strength}
+\subsection{Degree centrality}
 
-\subsection{Degree si strength}
 
-Tabelul de centralitate evidentiaza existenta unor diferente clare intre
-sectoare in ceea ce priveste numarul si intensitatea legaturilor directe.
-Unele noduri apar mai conectate si mai influente structural, in timp ce altele
-raman mai periferice.
+Tabelul de centralitate evidentiaza sectoarele cu cel mai ridicat degree.
+In general, sectoarele ciclice (XLK, XLF, XLI) tind sa aiba degree mai ridicat,
+fiind conectate direct cu mai multi participanti ai pietei.
 
-Din punct de vedere statistic, aceasta distributie neuniforma a centralitatii
-confirma faptul ca reteaua financiara estimata nu este omogena. Importanta unui
-sector nu se reduce la simpla apartenenta sa la sistem, ci depinde de pozitia
-sa efectiva in structura dependentei conditionale.
+Sectoarele defensive (XLU, XLP) au in general degree mai scazut, reflectand
+o pozitie mai periferica in structura retelei. Aceasta separare este consistenta
+cu literatura financiara care distinge intre sectoare ciclice si defensive
+\cite{tsay2010}.
+
+
+\subsection{Strength (grad ponderat)}
+
+Masura de strength completeaza degree-ul prin incorporarea intensitatii
+legaturilor. Un sector poate avea un numar moderat de conexiuni, dar poate
+ramane important daca muchiile sale au ponderi mari in valoare absoluta.
+
+Din acest motiv, strength-ul este mai informativ decat degree-ul simplu in
+retele ponderate si permite identificarea nodurilor care au un rol sistemic
+mai puternic in reteaua estimata.
 
 \subsection{Betweenness centrality}
 

@@ -3,6 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[romanian]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -11,11 +13,25 @@
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{booktabs}
-\usepackage{array}
 \usepackage{tabularx}
+\usepackage{caption}
+\usepackage[numbers]{natbib}
+\usepackage{titlesec}
+
 
 \geometry{margin=2.5cm}
 \onehalfspacing
+
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\chaptername\ \thechapter}
+  {10pt}
+  {\Huge}
+
+\titlespacing*{\chapter}{0pt}{-10pt}{18pt}
+
+\captionsetup[figure]{position=bottom,skip=6pt}
+\captionsetup[table]{position=bottom,skip=6pt}
 
 % Theorem environments
 \newtheorem{theorem}{Teorema}[chapter]
@@ -49,7 +65,7 @@
 \input{9-discussion}
 \input{10-conclusion}
 
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{bibliography}
 
 \end{document}
