@@ -7,7 +7,6 @@
 \usepackage{amsthm}
 \usepackage{newtxtext,newtxmath}
 \usepackage{microtype}
-\sloppy
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{setspace}
@@ -16,7 +15,10 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{caption}
-\usepackage[numbers]{natbib}
+\usepackage[authoryear,round]{natbib}
+\setlength{\bibhang}{0pt}
+\setlength{\bibsep}{6pt}
+\AtBeginDocument{\raggedbottom}
 \usepackage{titlesec}
 \usepackage{listings}
 \usepackage{xcolor}
@@ -93,7 +95,10 @@
 \input{9-discussion}
 \input{10-conclusion}
 
-\bibliographystyle{apalike}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografie}
+\bibliographystyle{plainnat}
 \bibliography{bibliography}
 
 \clearpage
