@@ -3,14 +3,14 @@
 Dupa estimarea matricei de precizie prin graphical lasso, urmatorul pas este
 constructia si analiza retelei financiare asociate. In aceasta reprezentare,
 fiecare nod corespunde unui sector, iar o muchie intre doua noduri semnifica
-prezenta unei dependente conditionale semnificative. Aceasta transformare
+prezenta unei dependente conditionale directe. Aceasta transformare
 dintr-un obiect matricial intr-un graf permite o analiza structurala bogata,
 imposibila prin simpla inspectie a matricei numerice.
 
 \section{Constructia retelei}
 
 Reteaua financiara este construita in scriptul \texttt{01\_var\_glasso\_network.R}
-utilizand pachetul \texttt{igraph} \cite{csardi2006}. Procedura este urmatoarea:
+utilizand pachetul \texttt{igraph} \citep{csardi2006}. Procedura este urmatoarea:
 
 \begin{enumerate}
     \item Se extrag indicii $(i,j)$ cu $\hat{\theta}_{ij} \neq 0$ si $i < j$
@@ -25,7 +25,8 @@ utilizand pachetul \texttt{igraph} \cite{csardi2006}. Procedura este urmatoarea:
 
 \subsection{Densitatea retelei}
 
-Densitatea masoara fractia de muchii existente din totalul posibil:
+Densitatea masoara fractia de muchii existente din totalul posibil
+\citep{newman2010}:
 \begin{equation}
     d(G) = \frac{|E|}{n(n-1)/2},
     \label{eq:density}
@@ -40,12 +41,12 @@ Un aspect important al retelei este daca toti nodurile sunt conectati intr-o
 singura componenta sau exista sectoare izolate. Existenta unei singure componente
 conexe indica ca toti sectorii sunt conectati, direct sau indirect, prin lantul
 de dependente conditionale. Aceasta proprietate este relevanta pentru analiza
-propagarii socurilor.
+propagarii socurilor \citep{newman2010}..
 
 \subsection{Diametrul grafului}
 
 Diametrul $\operatorname{diam}(G)$ este lungimea celui mai lung drum minim
-(drum geodezic) din graf:
+(drum geodezic) din graf \citep{newman2010}:
 \[
     \operatorname{diam}(G) = \max_{i,j \in V} d(i,j),
 \]
@@ -61,7 +62,7 @@ sunt exportate in fisierul \texttt{centrality.csv}.
 
 \subsection{Degree centrality}
 
-Degree-ul unui nod este numarul de muchii incidente:
+Degree-ul unui nod este numarul de muchii incidente \citep{newman2010}:
 \begin{equation}
     \deg(i) = |\mathcal{N}(i)| = |\{j : \{i,j\} \in E\}|.
     \label{eq:degree}
@@ -73,7 +74,7 @@ in sistem si un potential mai mare de a propaga sau absorbi socuri.
 
 \subsection{Strength (gradul ponderat)}
 
-Strength ia in considerare si intensitatea conexiunilor:
+Strength ia in considerare si intensitatea conexiunilor \citep{newman2010}:
 \begin{equation}
     s_i = \sum_{j \in \mathcal{N}(i)} |\hat{\theta}_{ij}|.
     \label{eq:strength}
@@ -85,7 +86,8 @@ decat degree-ul simplu in contextul retelelor ponderate.
 
 \subsection{Betweenness centrality}
 
-Betweenness centralitati masoara importanta unui nod ca intermediar structural:
+Betweenness centrality masoara importanta unui nod ca intermediar structural
+\citep{freeman1977}:
 \begin{equation}
     C_B(i) = \sum_{\substack{s,t \in V \\ s \neq i \neq t}}
     \frac{\sigma(s,t \mid i)}{\sigma(s,t)},
@@ -102,7 +104,7 @@ sistemic, sectoarele cu betweenness ridicat sunt deosebit de importante.
 \subsection{Eigenvector centrality}
 
 Eigenvector centrality tine cont nu doar de numarul conexiunilor unui nod,
-ci si de importanta vecinilor sai. Fie $W \in \mathbb{R}^{n \times n}$ matricea
+ci si de importanta vecinilor sai \citep{bonacich1987}. Fie $W \in \mathbb{R}^{n \times n}$ matricea
 de adiacenta ponderata a grafului. Eigenvector centrality satisface:
 \begin{equation}
     \lambda_{\max} x_i = \sum_{j=1}^n W_{ij} x_j,
@@ -136,7 +138,7 @@ difera fundamental de o retea bazata pe corelatii. In analiza de corelatie,
 doua sectoare cu corelatie ridicata ar fi conectate, chiar daca acea corelatie
 este mediata complet de un factor comun. In reteaua noastra, o muchie exista
 numai daca dependenta dintre doua sectoare persista dupa controlul pentru
-toate celelalte sectoare.
+toate celelalte sectoare \citep{lauritzen1996,friedman2008}.
 
 Aceasta proprietate poate fi ilustrata printr-un exemplu simplu: sectoarele
 XLK (tehnologie) si XLY (bunuri discretionare) pot parea corelate pentru ca
@@ -149,7 +151,7 @@ o muchie directa intre ele.
 
 Chiar si fara o metoda formala de detectie a comunitatilor, structura vizuala
 a grafului poate sugera existenta unor grupuri de sectoare mai strans conectate.
-In literatura financiara, se asteapta o grupare naturala in:
+Din perspectiva economica, se poate anticipa o grupare naturala a unor sectoare in:
 \begin{itemize}
     \item \textit{Sectoare ciclice}: XLK, XLF, XLY, XLI -- sensibile la
     ciclul economic.
@@ -162,19 +164,3 @@ Daca structura retelei reflecta aceasta clasificare, aceasta constituie o
 validare a metodologiei: reteaua recupereaza cunoasterea economica existenta
 printr-o procedura complet data-driven.
 
-\section{Masurile de centralitate utilizate}
-
-Pentru caracterizarea pozitiei fiecarui sector in retea sunt utilizate mai multe
-masuri de centralitate. In implementarea empirica sunt calculate in special
-degree, strength, betweenness, closeness si eigenvector centrality.
-
-Aceste masuri surprind aspecte diferite ale importantei structurale a unui nod.
-Degree masoara numarul de legaturi directe, strength agrega intensitatea
-ponderilor asociate muchiilor incidente, betweenness evidentiaza rolul de
-intermediar pe drumurile scurte, iar eigenvector centrality surprinde conectarea
-la alte noduri importante.
-
-In interpretarea rezultatelor din aceasta lucrare, un rol central il are mai
-ales masura \textit{strength\_abs}, deoarece ea sintetizeaza intensitatea totala
-a legaturilor directe ale fiecarui sector. Aceasta marime este utilizata atat in
-analiza retelei statice, cat si in analiza pe ferestre temporale.
