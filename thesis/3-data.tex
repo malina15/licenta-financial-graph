@@ -38,7 +38,7 @@ XLC  & Communication Services & Telecomunicatii, media, servicii interactive si 
 \end{table}
 
 
-Aceste unsprezece sectoare acopera intreaga piata de capital americana si
+Aceste unsprezece sectoare ofera o acoperire larga a pietei de capital americane si
 permit o analiza comprehensiva a structurii de dependenta.
 
 \section{Colectarea si preprocesarea datelor}
@@ -60,6 +60,8 @@ logaritmice sunt mai adecvate pentru modelare decat nivelurile preturilor si sun
 mai apropiate de ipoteza de stationaritate necesara in analiza VAR
 \citep{tsay2010}.
 
+Aceasta alegere metodologica este esentiala pentru coerenta analizei, deoarece toate variabilele sunt observate simultan in fiecare moment de timp, ceea ce permite interpretarea directa a matricii de covarianta si a matricii de precizie fara ajustari suplimentare.
+
 \section{Trasabilitatea fisierelor}
 
 Pipeline-ul de prelucrare salveaza explicit preturile in fisierul
@@ -70,31 +72,24 @@ independenta a fiecarei faze a procesarii.
 
 \section{Perioada si frecventa de observatie}
 
-Esantionul utilizat acopera perioada cuprinsa intre \textbf{01 ianuarie 2016} si
-\textbf{21 ianuarie 2026}, la frecventa zilnica. Numarul total de zile
-tranzactionate este de aproximativ $T = 1900$ observatii per activ, dupa
-eliminarea zilelor fara tranzactionare si a valorilor lipsa.
+Esantionul utilizat acopera perioada cuprinsa intre 01 ianuarie 2016 si 21 ianuarie 2026, la frecventa zilnica, rezultand aproximativ $T = 1900$ observatii per activ dupa alinierea seriilor si eliminarea valorilor lipsa.
 
-Acest interval nu este foarte lung pentru o analiza istorica comprehensiva.
-Totusi, el este suficient pentru aplicarea si ilustrarea metodelor statistice
-utilizate si include evenimente structurale majore care testeaza robustetea
-modelului:
+Din punct de vedere statistic, dimensiunea esantionului este adecvata pentru metodele utilizate. In particular, in raport cu numarul de variabile ($n = 11$), avem un regim in care $T \gg n$, ceea ce asigura stabilitatea estimarii modelului VAR si a matricii de covarianta empirice. In acest context, utilizarea metodei graphical lasso nu este determinata de o problema de tip high-dimensional ($p \gg n$), ci de necesitatea obtinerii unei reprezentari rare (sparse) si interpretabile a structurii de dependenta conditionala.
+
+Alegerea perioadei reflecta si constrangerea de disponibilitate comuna a datelor pentru toate ETF-urile sectoriale incluse in analiza. Seriile au fost aliniate pe intersectia zilelor de tranzactionare, ceea ce garanteaza comparabilitatea observatiilor si evita introducerea unor proceduri de imputare care ar putea distorsiona estimarea dependentei conditionale.
+
+Aceasta alegere metodologica este esentiala pentru coerenta analizei, deoarece toate variabilele sunt observate simultan in fiecare moment de timp, ceea ce permite interpretarea directa a matricii de covarianta si a matricii de precizie fara ajustari suplimentare.
+
+Intervalul analizat include mai multe regimuri de piata relevante, ceea ce permite investigarea stabilitatii structurii retelei in conditii diferite de volatilitate si corelatie. Dintre acestea, pot fi mentionate urmatoarele episoade:
 
 \begin{itemize}
-    \item \textbf{2018--2019}: Tensiuni comerciale SUA--China, volatilitate
-    moderata a pietelor.
-    \item \textbf{Februarie--Martie 2020}: Socul COVID-19, cea mai rapida
-    scadere a pietelor din istoria moderna, urmata de o recuperare puternica.
-    \item \textbf{2022}: Cresterea rapida a ratelor dobanzii de catre Fed,
-    cu impact diferentiat pe sectoare (sectoarele ciclice si cel imobiliar
-    au suferit cel mai mult).
-    \item \textbf{2023--2025}: Revenire diferentiata, cu o contributie importanta
-    a sectorului tehnologic in contextul expansiunii aplicatiilor bazate pe
-    inteligenta artificiala.
+    \item \textbf{2018-2019}: tensiuni comerciale SUA-China si cresterea incertitudinii macrofinanciare.
+    \item \textbf{Februarie-martie 2020}: socul COVID-19, urmat de o crestere brusca a volatilitatii si de o corelare accentuata intre sectoare.
+    \item \textbf{2022}: ciclul de inasprire monetara al Fed, cu efecte diferentiate asupra sectoarelor sensibile la dobanda.
+    \item \textbf{2023-2025}: reasezare sectoriala si consolidarea rolului sectorului tehnologic in dinamica pietei.
 \end{itemize}
 
-Aceste episoade creaza conditii naturale pentru a testa daca structura retelei
-financiare se modifica in timp, aspect analizat in Capitolul~8.
+Aceste episoade creeaza un cadru empiric relevant pentru a testa daca structura retelei financiare se modifica in timp, aspect analizat in Capitolul~8.
 
 \section{Preprocesarea datelor}
 
@@ -136,6 +131,8 @@ Dupa calcularea randamentelor, datele sunt organizate intr-o matrice
 $R \in \mathbb{R}^{T \times n}$, unde $T \approx 1900$ este numarul de zile
 tranzactionate si $n = 11$ este numarul de sectoare. Fiecare coloana corespunde
 unui ETF, iar fiecare linie corespunde unei zile de tranzactionare.
+
+Aceasta reprezentare matriciala este esentiala pentru aplicarea modelelor multivariate, deoarece permite interpretarea dependentei dintre variabile atat in termeni de covarianta, cat si in termeni de dependenta conditionala prin matricea de precizie.
 
 \section{Proprietati statistice ale randamentelor}
 
