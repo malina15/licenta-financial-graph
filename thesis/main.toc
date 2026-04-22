@@ -1,0 +1,127 @@
+\babel@toc {romanian}{}\relax 
+\contentsline {chapter}{Abstract}{i}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Introducere}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivatia si contextul lucrarii}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Obiectivele lucrarii}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Structura lucrarii}{2}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Preliminarii}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Serii temporale multivariate}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Modelul vector autoregresiv}{4}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Estimarea parametrilor}{5}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Selectia ordinului}{5}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Distributia gaussiana multivariata si independenta conditionala}{6}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Grafuri gaussiene Markov}{6}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Norma $\ell _1$ si sparsitate}{7}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Masuri de centralitate in grafuri}{7}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Datele utilizate}{9}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Selectia activelor}{9}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Colectarea si preprocesarea datelor}{10}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Trasabilitatea fisierelor}{11}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Perioada si frecventa de observatie}{11}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Preprocesarea datelor}{12}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Descarcarea datelor}{12}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Calculul randamentelor logaritmice}{12}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Structura setului de date}{13}{subsection.3.5.3}%
+\contentsline {section}{\numberline {3.6}Proprietati statistice ale randamentelor}{13}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Etichetarea activelor}{13}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Modelul VAR}{14}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Specificarea modelului}{14}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Selectia ordinului}{14}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Forma VAR(1)}{15}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}Strategia de estimare}{15}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Strategia de diagnostic}{15}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Estimarea prin OLS}{16}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Verificarea stabilitatii}{16}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Diagnosticele modelului}{17}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Testul Portmanteau pentru autocorelatia reziduurilor}{17}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Testul ARCH multivariat}{17}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}Testul de normalitate}{17}{subsection.4.7.3}%
+\contentsline {section}{\numberline {4.8}Rolul reziduurilor in analiza ulterioara}{17}{section.4.8}%
+\contentsline {chapter}{\numberline {5}Estimarea matricei de precizie prin graphical lasso}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Limitele estimarii directe}{19}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Problema de optimizare penalizata}{19}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Interpretarea termenilor}{20}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Convexitate si existenta solutiei}{20}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Algoritm de rezolvare}{20}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Selectia parametrului de regularizare}{20}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Criteriul BIC pentru graphical models}{21}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Analiza pe grila de valori}{21}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Proprietati statistice ale estimatorului GLasso}{21}{section.5.4}%
+\contentsline {section}{\numberline {5.5}De la matricea de precizie la retea}{22}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Legatura cu implementarea empirica}{22}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Analiza retelei financiare}{23}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Constructia retelei}{23}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Proprietati globale ale grafului}{23}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Densitatea retelei}{23}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Componenta conexa}{24}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Diametrul grafului}{24}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}Masuri de centralitate}{24}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Degree centrality}{24}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Strength (gradul ponderat)}{24}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Betweenness centrality}{25}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Eigenvector centrality}{25}{subsection.6.3.4}%
+\contentsline {section}{\numberline {6.4}Interpretarea structurii grafului}{25}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Sectoare centrale vs. periferice}{25}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Diferenta fata de analiza de corelatie}{26}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Grupuri de sectoare}{26}{subsection.6.4.3}%
+\contentsline {chapter}{\numberline {7}Rezultate}{27}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Rezultatele modelului VAR(1)}{27}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Selectia ordinului}{27}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Stabilitate si diagnostice}{27}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}Matricea de covarianta a reziduurilor}{28}{subsection.7.1.3}%
+\contentsline {section}{\numberline {7.2}Rezultatele Graphical Lasso}{29}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Selectia parametrului de regularizare}{29}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Sparsitatea matricei de precizie}{30}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Interpretarea elementelor nenule}{30}{subsection.7.2.3}%
+\contentsline {section}{\numberline {7.3}Structura retelei financiare}{30}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Vizualizarea grafului}{30}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Cele mai importante muchii}{31}{subsection.7.3.2}%
+\contentsline {section}{\numberline {7.4}Masuri de centralitate: rezultate}{31}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Degree centrality}{31}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Strength (grad ponderat)}{32}{subsection.7.4.2}%
+\contentsline {subsection}{\numberline {7.4.3}Betweenness centrality}{32}{subsection.7.4.3}%
+\contentsline {subsection}{\numberline {7.4.4}Eigenvector centrality}{32}{subsection.7.4.4}%
+\contentsline {section}{\numberline {7.5}Ranking sectorial: reteaua partial-corr}{32}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Ranking sectorial: reteaua Granger}{33}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Interpretare statistica a rezultatelor}{34}{section.7.7}%
+\contentsline {chapter}{\numberline {8}Analiza pe ferestre temporale}{36}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Metodologia ferestrelor temporale}{36}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}Definitia ferestrei rulante}{36}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}Alegerea dimensiunii ferestrei}{37}{subsection.8.1.2}%
+\contentsline {section}{\numberline {8.2}Indicatori dinamici ai retelei}{37}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}Evolutia strength-ului sectorial (reteaua partial-corr)}{37}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Evolutia PageRank-ului sectorial (reteaua Granger)}{38}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}Evolutia out-degree-ului (reteaua Granger)}{39}{subsection.8.2.3}%
+\contentsline {section}{\numberline {8.3}Analiza pe sub-esantioane}{39}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Motivatie si definirea perioadelor}{39}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}Reteaua partial-corr: stabilitatea ierarhiei}{40}{subsection.8.3.2}%
+\contentsline {subsection}{\numberline {8.3.3}Reteaua Granger: rotatia ierarhiei predictive}{41}{subsection.8.3.3}%
+\contentsline {section}{\numberline {8.4}Interpretarea dinamica a rezultatelor}{42}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Limitele analizei dinamice}{43}{section.8.5}%
+\contentsline {chapter}{\numberline {9}Discutii si limite}{44}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Avantajele metodologice ale abordarii}{44}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}Separarea dependentei temporale de cea contemporana}{44}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}Identificarea dependentelor conditionale}{44}{subsection.9.1.2}%
+\contentsline {subsection}{\numberline {9.1.3}Parsimonie si interpretabilitate}{45}{subsection.9.1.3}%
+\contentsline {section}{\numberline {9.2}Limitele analizei}{45}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}Dimensiunea esantionului}{45}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}Linearitatea modelului VAR}{45}{subsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.2.3}Selectia activelor si agregarea}{45}{subsection.9.2.3}%
+\contentsline {subsection}{\numberline {9.2.4}Dependenta de parametrul de regularizare}{46}{subsection.9.2.4}%
+\contentsline {subsection}{\numberline {9.2.5}Absenta cauzalitatii}{46}{subsection.9.2.5}%
+\contentsline {section}{\numberline {9.3}Directii de dezvoltare ulterioara}{47}{section.9.3}%
+\contentsline {chapter}{\numberline {10}Concluzii}{48}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Sinteza metodologica}{48}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Contributii principale}{49}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Concluzii statistice si matematice}{49}{section.10.3}%
+\contentsline {section}{\numberline {10.4}Concluzie finala}{51}{section.10.4}%
+\contentsline {chapter}{Bibliografie}{52}{section*.16}%
+\contentsline {chapter}{Anexe}{54}{chapter*.18}%
+\contentsline {section}{\numberline {10.5}Bibliografia figurilor si tabelelor}{54}{section.10.5}%
+\contentsline {section}{\numberline {10.6}Fragmente relevante de cod}{54}{section.10.6}%
+\contentsline {subsection}{\numberline {10.6.1}Descarcarea datelor si calculul randamentelor logaritmice}{54}{subsection.10.6.1}%
+\contentsline {subsection}{\numberline {10.6.2}Estimarea modelului VAR si extragerea reziduurilor}{55}{subsection.10.6.2}%
+\contentsline {subsection}{\numberline {10.6.3}Estimarea matricei de precizie prin graphical lasso}{55}{subsection.10.6.3}%
+\contentsline {subsection}{\numberline {10.6.4}Constructia retelei financiare bazate pe corelatii partiale}{56}{subsection.10.6.4}%
+\contentsline {subsection}{\numberline {10.6.5}Calculul masurilor de centralitate}{56}{subsection.10.6.5}%
+\contentsline {subsection}{\numberline {10.6.6}Analiza pe ferestre temporale}{57}{subsection.10.6.6}%
