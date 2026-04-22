@@ -35,8 +35,9 @@ intreaga procedura:
     \textit{strength\_abs}.
 \end{enumerate}
 
-Aceasta procedura este implementata in scriptul \texttt{06\_time\_window\_network.R},
-iar sinteza rezultatelor este realizata in \texttt{07\_write\_time\_window\_summary\_md.R}.
+Aceasta procedura este implementata in scripturile \texttt{06\_time\_window\_network.R}
+si \texttt{08\_sector\_rankings.R}, unde ultima extinde analiza cu metrici suplimentare
+(betweenness, eigenvector centrality) si cu reteaua Granger estimata dinamic.
 
 \subsection{Alegerea dimensiunii ferestrei}
 
@@ -56,23 +57,175 @@ estimarea stabila a modelului VAR si a matricei de covarianta.
 
 \section{Indicatori dinamici ai retelei}
 
-\subsection{Evolutia centralitatii sectoriale}
+\subsection{Evolutia strength-ului sectorial (reteaua partial-corr)}
 
-Fisierul \texttt{top\_sector\_per\_window.csv} sintetizeaza, pentru fiecare
-fereastra, sectorul cu cea mai ridicata valoare a masurii
-\textit{strength\_abs}. Aceasta informatie permite investigarea stabilitatii
-sau variabilitatii pozitiei centrale in retea.
+Figura~\ref{fig:rolling-pc-strength} prezinta evolutia in timp a strength-ului
+pentru fiecare sector, calculat in fiecare fereastra rulanta. Liniile verticale
+punctate marcheaza trei evenimente de referinta: criza COVID (martie 2020),
+invazia Ucrainei (februarie 2022) si criza bancara americana (martie 2023).
 
-Daca acelasi sector apare frecvent in rolul de nod central, atunci pozitia sa
-poate fi interpretata ca relativ stabila in esantionul analizat. Daca, in
-schimb, identitatea nodului dominant se modifica intre ferestre, atunci acest
-lucru sugereaza ca structura dependentei conditionale este sensibila la contextul
-de piata si la subperioada analizata.
+\begin{figure}[H]
+    \caption{Evolutia strength-ului sectorial (reteaua partial-corr) pe ferestre rulante de 252 de zile tranzactionate (pas lunar).}
+    \label{fig:rolling-pc-strength}
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/rankings/rolling_pc_strength.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
 
-Din punct de vedere metodologic, aceasta analiza completeaza reteaua estimata pe
-intregul esantion si arata ca centralitatea structurala poate fi studiata nu doar
-static, ci si dinamic.
+Doua caracteristici structurale sunt vizibile in grafic. In primul rand, exista o
+crestere brusca a strength-ului pentru toate sectoarele in fereastra care cuprinde
+criza COVID (capatul ferestrei in jurul lunii martie 2020). Aceasta semnaleaza o
+crestere a intensitatii dependentelor conditionale in perioadele de stres, fenomen
+documentat in literatura ca \textit{correlation breakdown}
+\citep{longin2001,ang2002}. In al doilea rand, XLK (Technology) are cel mai ridicat
+strength in perioada pre-COVID, dar este devansat de XLF (Financials) in perioada
+acuta a crizei, sugerand ca sectorul financiar devine nodul cu cele mai intense
+dependente conditionale in momentele de presiune sistemica.
 
+\subsection{Evolutia PageRank-ului sectorial (reteaua Granger)}
+
+Figura~\ref{fig:rolling-gr-pagerank} prezinta evolutia PageRank-ului in reteaua
+Granger estimata pe ferestre rulante. Spre deosebire de strength (care masoara
+co-miscarea contemporana), PageRank-ul Granger captureaza importanta in transmiterea
+predictiva a informatiei.
+
+\begin{figure}[H]
+    \caption{Evolutia PageRank sectorial (reteaua Granger) pe ferestre rulante de 252 de zile tranzactionate (pas lunar).}
+    \label{fig:rolling-gr-pagerank}
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/rankings/rolling_gr_pagerank.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+Reteaua Granger prezinta o volatilitate mai ridicata a rangurilor comparativ cu
+reteaua partial-corr. Aceasta este asteptata, deoarece relatiile de cauzalitate
+predictiva sunt mai fragile temporal decat co-miscarile contemporane. In jurul
+crizei COVID, XLF si XLV (Health Care) isi mentin pozitii de top la PageRank,
+sugerand ca aceste sectoare raman cele mai predictibile din perspectiva macroeconoimca
+si in perioade de turbulenta. Dupa 2022, profilul PageRank se modifica: XLU
+(Utilities) si XLP (Consumer Staples) dobandesc o importanta crescuta, in
+concordanta cu rotatia catre sectoare defensive observata pe pietele de capital
+in contextul ciclului monetar restrictiv.
+
+\subsection{Evolutia out-degree-ului (reteaua Granger)}
+
+Figura~\ref{fig:rolling-gr-outdegree} prezinta evolutia out-degree-ului, metrica
+care cuantifica numarul de sectoare catre care un nod transmite cauzalitate
+Granger semnificativa. Un out-degree ridicat indica un sector care contine
+informatii predictive utile pentru un numar mare de alti participanti ai pietei.
+
+\begin{figure}[H]
+    \caption{Evolutia out-degree sectorial (reteaua Granger) pe ferestre rulante de 252 de zile tranzactionate (pas lunar).}
+    \label{fig:rolling-gr-outdegree}
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/rankings/rolling_gr_outdegree.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+Out-degree-ul prezinta varfuri clare in fereastra COVID, unde XLF si XLI
+(Industrials) inregistreaza valorile maxime, reflectand cresterea temporara a
+puterii predictive a sectoarelor ciclice in conditii de instabilitate macroeconomica.
+Acest comportament este consistent cu ipoteza ca in perioade de stres, dinamica
+sectorului financiar si a celui industrial contine informatii relevante despre
+directia generala a economiei \citep{diebold2014}.
+
+\section{Analiza pe sub-esantioane}
+
+\subsection{Motivatie si definirea perioadelor}
+
+Analiza pe intregul esantion furnizeaza o imagine agregata care poate obscura
+modificarile structurale asociate unor regimuri economice distincte. In
+consecinta, in aceasta sectiune reteaua este re-estimata complet pe trei
+sub-esantioane definite pe criterii economice:
+
+\begin{itemize}
+    \item \textbf{Pre-COVID} (iunie 2018 -- decembrie 2019, $T = 386$ observatii):
+    perioada de expansiune economica relativ stabila, caracterizata prin
+    volatilitate redusa si randamente pozitive in sectoarele ciclice.
+    \item \textbf{COVID} (ianuarie 2020 -- decembrie 2021, $T = 505$ observatii):
+    perioada dominata de socul pandemic, de interventiile fiscale si monetare
+    masive si de recuperarea ulterioara.
+    \item \textbf{Post-COVID} (ianuarie 2022 -- ianuarie 2026, $T = 1016$ observatii):
+    perioada de normalizare macroeconomica, cu ciclu monetar restrictiv si
+    rotatie sectoriala catre defensive.
+\end{itemize}
+
+Pentru fiecare sub-esantion, procedura completa (VAR(1), graphical lasso, testele
+Granger, calculul centralitatilor) este re-aplicata de la zero. Penalizarea $\rho$
+este mentinuta constanta la valoarea din analiza principala pentru a pastra
+comparabilitatea.
+
+\subsection{Reteaua partial-corr: stabilitatea ierarhiei}
+
+Figura~\ref{fig:sub-pc-strength} compara rangurile sectoriale dupa strength pe
+cele trei sub-esantioane.
+
+\begin{figure}[H]
+    \caption{Ranking dupa strength (reteaua partial-corr) pe sub-esantioane.}
+    \label{fig:sub-pc-strength}
+    \centering
+    \includegraphics[width=0.88\textwidth]{../outputs/rankings/heatmap_sub_pc_strength.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+Rezultatele releva modificari substantiale intre perioade. In pre-COVID, XLK
+(Technology) ocupa primul loc, reflectand rolul sau central in bull market-ul
+alimentat de revolutia digitala, urmat de XLC (Communication Services, rang 2)
+si XLY (Consumer Discretionary, rang 3). In perioada COVID, XLF (Financials)
+urca de la rangul 5 la rangul 1, iar XLI (Industrials) ocupa locul 2. Aceasta
+rotatie reflecta faptul ca, in criza, sectorul financiar devine punctul central
+al sistemului de dependente conditionale: incertitudinea privind bilanturile
+bancilor, politica Fed si conditiile de creditare se propaga simultan catre toate
+celelalte sectoare, generand un strength ridicat pentru XLF.
+
+In perioada post-COVID, ierarhia se redistribuie din nou: XLY (Consumer
+Discretionary) devine sectorul cu cel mai ridicat strength, urmat de XLK (rang 2)
+si XLC (rang 3). Sectoarele defensive XLU, XLV si XLP isi mentin pozitia de
+coada de ierarhie pe tot parcursul celor trei perioade.
+
+\subsection{Reteaua Granger: rotatia ierarhiei predictive}
+
+Figura~\ref{fig:sub-gr-pagerank} compara rangurile sectoriale dupa PageRank in
+reteaua Granger pe cele trei sub-esantioane.
+
+\begin{figure}[H]
+    \caption{Ranking dupa PageRank (reteaua Granger) pe sub-esantioane.}
+    \label{fig:sub-gr-pagerank}
+    \centering
+    \includegraphics[width=0.88\textwidth]{../outputs/rankings/heatmap_sub_gr_pagerank.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+In pre-COVID si COVID, XLF si XLV detin constant primele doua locuri la PageRank,
+indicand ca sectorul financiar si cel de sanatate sunt consistent cele mai
+predictibile de catre restul pietei. Aceasta stabilitate este notabila: reteaua
+Granger, care este mai volatila decat cea partial-corr, mentine totusi aceleasi
+doua sectoare la varf in doua perioade consecutive cu dinamici macroeconomice
+complet diferite.
+
+Schimbarea majora apare in post-COVID: XLU (Utilities) urea pe primul loc la
+PageRank (de la rangul 5 in ambele perioade anterioare), urmat de XLP (Consumer
+Staples, rang 2). Aceasta inversare a ierarhiei semnifica ca, in contextul unui
+ciclu de dobanzi ridicate, miscarile din sectoarele sensibile la rata dobanzii
+(utilitati, consum de baza) sunt cel mai puternic determinate de dinamica ansamblului
+pietei, captata prin cauzalitate Granger.
+
+Figura~\ref{fig:sub-gr-outdegree} ofera perspectiva complementara din unghiul
+out-degree-ului, care identifica sectoarele cu putere predictiva maxima.
+
+\begin{figure}[H]
+    \caption{Ranking dupa out-degree (reteaua Granger) pe sub-esantioane.}
+    \label{fig:sub-gr-outdegree}
+    \centering
+    \includegraphics[width=0.88\textwidth]{../outputs/rankings/heatmap_sub_gr_outdegree.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+In pre-COVID, XLK (Technology) are cel mai mare out-degree (rang 1), iar in
+COVID liderul devine XLF (rang 1 alaturi de XLI). In post-COVID, XLRE (Real
+Estate) si XLP (Consumer Staples) preiau pozitia de top la out-degree, sugerand
+ca traiectoria acestor sectoare contine informatii predictive deosebit de utile
+pentru restul pietei in contextul normalizarii monetare.
 
 \section{Interpretarea dinamica a rezultatelor}
 

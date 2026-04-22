@@ -163,41 +163,94 @@ relatii directe domina structura estimata.
 
 \subsection{Degree centrality}
 
-
-Valorile calculate ale masurilor de centralitate evidentiaza sectoarele cu cel
-mai ridicat degree.
-In general, sectoarele ciclice (XLK, XLF, XLI) tind sa aiba degree mai ridicat,
-fiind conectate direct cu mai multi participanti ai pietei.
-
-Sectoarele defensive (XLU, XLP) au in general degree mai scazut, reflectand
-o pozitie mai periferica in structura retelei. Aceasta separare este consistenta
-cu literatura financiara care distinge intre sectoare ciclice si defensive
-\citep{tsay2010}.
-
+In reteaua partial-corr estimata pe intregul esantion, XLF (Financials) inregistreaza
+cel mai mare degree ($d = 9$), urmat de XLK (Technology), XLB (Materials) si XLRE
+(Real Estate), toate cu $d = 8$. La polul opus, XLU (Utilities) are $d = 2$, iar
+XLP (Consumer Staples) este izolat ($d = 0$), ceea ce indica absenta oricarei
+dependente conditionale directe cu celelalte sectoare la nivelul de regularizare
+adoptat. Aceasta separare dintre sectoarele ciclice (XLF, XLK, XLI) si cele defensive
+(XLU, XLP, XLV) este consistenta cu literatura financiara care documenteaza roluri
+diferite in ciclul economic \citep{tsay2010}.
 
 \subsection{Strength (grad ponderat)}
 
-Masura de strength completeaza degree-ul prin incorporarea intensitatii
-legaturilor. Un sector poate avea un numar moderat de conexiuni, dar poate
-ramane important daca muchiile sale au ponderi mari in valoare absoluta.
-
-Din acest motiv, strength-ul este mai informativ decat degree-ul simplu in
-retele ponderate si permite identificarea nodurilor care au un rol sistemic
-mai puternic in reteaua estimata.
+La nivelul strength-ului (suma ponderilor absolute ale muchiilor), ordinea se
+modifica partial fata de degree. XLK urea pe primul loc ($s = 0{,}746$), urmat
+de XLF ($s = 0{,}725$) si XLY (Consumer Discretionary, $s = 0{,}674$). Faptul ca
+XLK depaseste XLF la strength, desi XLF are degree mai mare, indica ca legaturile
+XLK sunt, in medie, mai intense. XLV (Health Care) si XLU raman la coada ierarhiei
+($s < 0{,}13$), sugerand nu doar putine conexiuni, ci si dependente conditionale de
+intensitate redusa.
 
 \subsection{Betweenness centrality}
 
-Sectoarele cu betweenness ridicat pot juca rolul de intermediari in
-transmiterea socurilor. Chiar daca nu au cel mai mare numar de conexiuni
-directe, ele se afla pe drumurile geodezice intre multi alti participanti.
-In perioade de stres financiar, socurile pot traversa aceste sectoare
-inainte de a afecta parti mai indepartate ale retelei.
+XLK ocupa primul loc si la betweenness, reflectand pozitia sa de intermediar central
+pe drumurile geodezice ale retelei. XLRE (Real Estate) se situeaza pe locul 2, un
+rezultat aparent contra-intuitiv, explicabil prin aceea ca XLRE functioneaza ca
+punte intre grupul sectoarelor ciclice si periferia retelei. Sectoarele cu betweenness
+nul (XLU, XLP, XLB, XLC) nu se afla pe niciun drum geodezic, deci socurile nu
+tranziteaza prin ele catre alte sectoare.
 
 \subsection{Eigenvector centrality}
 
-Eigenvector centrality identifica sectoarele conectate nu doar cu multi
-vecini, ci si cu vecini importanti. Sectoarele cu eigenvector centrality
-ridicat sunt parte a unui nucleu central al retelei, mai dificil de izolat.
+Eigenvector centrality confirma dominanta XLK (rangul 1), urmata de XLF (rangul 2)
+si XLY (rangul 3). Aceasta metrica recompenseaza conexiunile cu noduri deja centrale,
+consolidand imaginea unui nucleu format din sectoarele ciclice majore. XLU si XLV
+au valori de eigenvector centrality aproape de zero, ceea ce le plaseaza in afara
+acestui nucleu.
+
+\section{Ranking sectorial: reteaua partial-corr}
+
+Figura~\ref{fig:rank-pc-full} sintetizeaza intr-un singur heatmap rangurile
+obtinute de fiecare sector pe toate cele cinci dimensiuni de centralitate.
+Culoarea mai inchisa corespunde unui rang mai bun (mai mic), iar valorile
+numerice din celule permit citirea directa a pozitiei fiecarui sector.
+
+\begin{figure}[H]
+    \caption{Ranking sectorial pe baza masurilor de centralitate ale retelei partial-corr (eșantion complet, 2018--2026).}
+    \label{fig:rank-pc-full}
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/rankings/heatmap_rank_partialcorr_full.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+Heatmap-ul evidentiaza trei clustere distincte. Primul este nucleul central format
+din XLK si XLF, care ocupa pozitii de top pe aproape toate dimensiunile: XLK conduce
+pe betweenness, eigenvector si strength, in timp ce XLF detine primul loc la degree.
+Al doilea grup de sectoare cu centralitate medie include XLY, XLI si XLB, cu ranguri
+intre 2 si 5 pe cele mai multe metrici. Al treilea grup periferic cuprinde XLU, XLV
+si XLC, cu ranguri consistente de 7--10. Aceasta stratificare reflecta clivajul
+clasic dintre sectoare ciclice (cu rol central in reteaua de dependente conditionale)
+si sectoare defensive sau specifice (cu pozitie periferica).
+
+\section{Ranking sectorial: reteaua Granger}
+
+In reteaua Granger, interpretarea rangurilor difera structural fata de reteaua
+partial-corr, deoarece muchiile sunt directionate si captureaza cauzalitate
+predictiva, nu co-miscare contemporana. Figura~\ref{fig:rank-gr-full} prezinta
+ranking-urile pentru cele patru metrici relevante.
+
+\begin{figure}[H]
+    \caption{Ranking sectorial pe baza masurilor de centralitate ale retelei Granger (eșantion complet, 2018--2026).}
+    \label{fig:rank-gr-full}
+    \centering
+    \includegraphics[width=\textwidth]{../outputs/rankings/heatmap_rank_granger_full.png}
+    \caption*{Sursa: figura generata prin scriptul \texttt{R/08\_sector\_rankings.R}.}
+\end{figure}
+
+Primul loc la PageRank ii revine XLE (Energy, $\text{PR} = 0{,}163$), urmat de XLV
+(Health Care, $\text{PR} = 0{,}158$) si XLK ($\text{PR} = 0{,}120$). PageRank-ul
+ridicat al XLE reflecta faptul ca este tinta unor fluxuri de cauzalitate Granger
+provenite de la sectoare ele insele importante: pretul energiei este determinat de
+conditii macroeconomice largi, inregistrate de sectoarele ciclice, si nu de factori
+sectoriali izolati. XLF (Financials), cu rang egal 1 la in-degree, out-degree si
+betweenness, este cel mai activ intermediar directional: transmite semnale catre
+opt sectoare si le receptioneaza de la cinci. Un rezultat notabil este XLP (Consumer
+Staples) cu out-degree rang 1 (impartit cu XLF si XLI), ceea ce sugereaza ca miscarile
+din sectorul bunurilor de consum de baza contin informatii predictive pentru un numar
+ridicat de alte sectoare, in ciuda caracterului sau defensiv. La polul opus, XLU
+(Utilities) nu Granger-cauzeaza niciun alt sector (out-degree = 0) si are PageRank
+minim, confirmand rolul sau de nod terminal in reteaua de cauzalitate predictiva.
 
 \section{Interpretare statistica a rezultatelor}
 
